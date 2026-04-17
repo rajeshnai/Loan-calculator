@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en" style="height:-webkit-fill-available">
+<head>
+<meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>German Loan Calculator — Mortgage & Personal</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#185FA5;--blue-dark:#0C447C;--blue-light:#E6F1FB;--blue-mid:#378ADD;
+  --green:#0F6E56;--green-dark:#085041;--green-light:#EAF3DE;--green-mid:#1D9E75;
+  --amber:#BA7517;--amber-light:#FAEEDA;--amber-dark:#633806;
+  --coral:#D85A30;--coral-light:#FAECE7;
+  --gray-50:#f8f9fa;--gray-100:#f0f0f0;--gray-200:#e0e0e0;--gray-400:#888;--gray-600:#555;--gray-800:#222;
+  --radius:10px;--radius-lg:14px;
+  --border:1px solid #e5e5e5;
+  --shadow:0 1px 3px rgba(0,0,0,.06);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f4f6f9;color:#111;font-size:14px;min-height:100vh;min-height:-webkit-fill-available}
+
+/* ── TOP NAV ── */
+.top-nav{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;display:flex;align-items:center;gap:0;height:60px;position:sticky;top:0;z-index:100}
+.brand{font-size:16px;font-weight:700;color:var(--gray-800);margin-right:32px;white-space:nowrap}
+.brand span{color:var(--blue)}
+.nav-tabs{display:flex;height:100%;gap:0}
+.nav-tab{height:100%;padding:0 20px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-400);cursor:pointer;border-bottom:3px solid transparent;transition:.15s;white-space:nowrap}
+.nav-tab:hover{color:var(--gray-800)}
+.nav-tab.active-mort{color:var(--blue);border-bottom-color:var(--blue)}
+.nav-tab.active-loan{color:var(--green);border-bottom-color:var(--green)}
+.nav-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff;color:#333;transition:.15s}
+.btn:hover{background:var(--gray-50)}
+.btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-blue:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{background:var(--green-dark);border-color:var(--green-dark)}
+
+/* ── PAGES ── */
+.page{display:none;padding:28px 32px;max-width:1080px;margin:0 auto}
+.page.active{display:block}
+
+/* ── KPI BAND ── */
+.kpi-band{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:var(--radius);padding:16px 18px;border:var(--border)}
+.kpi-card.accent-blue{background:var(--blue-light);border-color:#b5d4f4}
+.kpi-card.accent-green{background:var(--green-light);border-color:#c0dd97}
+.kpi-card.accent-amber{background:var(--amber-light);border-color:#fac775}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gray-400);margin-bottom:7px}
+.kpi-card.accent-blue .kpi-label{color:#185FA5}
+.kpi-card.accent-green .kpi-label{color:var(--green)}
+.kpi-card.accent-amber .kpi-label{color:var(--amber)}
+.kpi-value{font-size:22px;font-weight:700;line-height:1.15;color:var(--gray-800)}
+.kpi-card.accent-blue .kpi-value{color:var(--blue-dark)}
+.kpi-card.accent-green .kpi-value{color:var(--green-dark)}
+.kpi-card.accent-amber .kpi-value{color:var(--amber-dark)}
+.kpi-sub{font-size:11px;color:var(--gray-400);margin-top:4px}
+.kpi-card.accent-blue .kpi-sub{color:var(--blue)}
+.kpi-card.accent-green .kpi-sub{color:var(--green)}
+
+/* ── SECTION CARDS ── */
+.section-card{background:#fff;border-radius:var(--radius-lg);border:var(--border);padding:20px 22px;margin-bottom:16px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100)}
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400)}
+.section-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px}
+.badge-blue{background:var(--blue-light);color:var(--blue-dark)}
+.badge-green{background:var(--green-light);color:var(--green-dark)}
+.collapse-btn{font-size:12px;padding:4px 12px;border:1px solid #e0e0e0;border-radius:6px;background:#fff;color:var(--gray-400);cursor:pointer}
+.collapse-btn:hover{background:var(--gray-50);color:var(--gray-800)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+
+/* ── FIELD WITH SLIDER ── */
+.field{margin-bottom:18px}
+.field:last-child{margin-bottom:0}
+.field-label{font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:9px;display:flex;justify-content:space-between;align-items:center}
+.field-label .range-hint{font-size:11px;color:#aaa;font-weight:400}
+.input-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.num-box{display:flex;align-items:center;background:var(--gray-50);border:1px solid #ddd;border-radius:8px;height:38px;min-width:120px;overflow:hidden;transition:.15s}
+.num-box:focus-within{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(24,95,165,.08)}
+.num-box.green:focus-within{border-color:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.08)}
+.num-box .pre{padding:0 6px 0 11px;font-size:13px;color:#999;white-space:nowrap;flex-shrink:0;user-select:none}
+.num-box input{border:none;background:transparent;font-size:16px;font-weight:600;color:#111;text-align:right;width:100%;padding:0 4px;height:100%;outline:none;font-family:inherit}
+.num-box .suf{padding:0 11px 0 3px;font-size:13px;color:#999;white-space:nowrap;flex-shrink:0;user-select:none}
+input[type=range]{width:100%;height:5px;border-radius:5px;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background:linear-gradient(to right,var(--blue) 0%,var(--blue) var(--pct,50%),#e0e0e0 var(--pct,50%),#e0e0e0 100%)}
+input[type=range].green-range{background:linear-gradient(to right,var(--green) 0%,var(--green) var(--pct,50%),#e0e0e0 var(--pct,50%),#e0e0e0 100%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2.5px solid var(--blue);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+input[type=range].green-range::-webkit-slider-thumb{border-color:var(--green)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:2.5px solid var(--blue);cursor:pointer}
+input[type=range].green-range::-moz-range-thumb{border-color:var(--green)}
+.slider-limits{display:flex;justify-content:space-between;font-size:10px;color:#bbb;margin-top:3px}
+
+/* ── BAR ROWS ── */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-lbl{font-size:12px;color:var(--gray-600);min-width:110px;flex-shrink:0}
+.bar-bg{flex:1;height:8px;border-radius:4px;background:var(--gray-100);overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.bar-val{font-size:12px;font-weight:700;min-width:90px;text-align:right;flex-shrink:0}
+.divider{height:1px;background:var(--gray-100);margin:14px 0}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:6px;margin-bottom:14px}
+.tab-btn{padding:5px 18px;border:1px solid #ddd;border-radius:7px;font-size:13px;cursor:pointer;background:#fff;color:var(--gray-400);transition:.15s}
+.tab-btn:hover{background:var(--gray-50)}
+.tab-btn.active-blue{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600}
+.tab-btn.active-green{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.data-table th{text-align:left;padding:9px 11px;border-bottom:2px solid var(--gray-200);color:var(--gray-400);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--gray-50)}
+.data-table td{padding:8px 11px;border-bottom:1px solid var(--gray-100);color:#333}
+.data-table tr:hover td{background:#fafafa}
+.data-table tr.bold5 td{border-bottom:2px solid var(--gray-200);font-weight:700}
+.note-cell{font-size:11px;font-weight:700}
+.note-blue{color:var(--blue)}
+.note-green{color:var(--green)}
+
+/* ── STATE SELECT ── */
+.state-select{width:100%;height:40px;padding:0 12px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff;color:#111;cursor:pointer;outline:none}
+.state-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(24,95,165,.08)}
+.state-badge{display:inline-block;background:var(--blue-light);color:var(--blue-dark);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:8px}
+
+/* ── LOAN TYPE CARDS ── */
+.loan-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.lt-card{border:1.5px solid #e0e0e0;border-radius:10px;padding:14px 16px;cursor:pointer;background:#fff;transition:.15s}
+.lt-card:hover{border-color:#b5d4f4;background:var(--gray-50)}
+.lt-card.sel{border-color:var(--green);background:var(--green-light);box-shadow:0 0 0 3px rgba(15,110,86,.08)}
+.lt-name{font-size:13px;font-weight:700;margin-bottom:4px;color:#111}
+.lt-rate{font-size:20px;font-weight:700;margin-bottom:3px;color:var(--green)}
+.lt-card.sel .lt-name{color:var(--green-dark)}
+.lt-desc{font-size:11px;color:var(--gray-400);line-height:1.45}
+.lt-card.sel .lt-desc{color:var(--green)}
+
+/* ── PURPOSE GRID ── */
+.purpose-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:8px}
+.pc{border:1.5px solid #e0e0e0;border-radius:9px;padding:12px 10px;cursor:pointer;text-align:center;background:#fff;transition:.15s}
+.pc:hover{border-color:#a5d6c1;background:var(--gray-50)}
+.pc.sel{border-color:var(--green);background:var(--green-light);box-shadow:0 0 0 3px rgba(15,110,86,.07)}
+.pc-icon{width:28px;height:28px;margin:0 auto 7px;display:flex;align-items:center;justify-content:center}
+.pc-name{font-size:11px;font-weight:600;color:#333;line-height:1.3}
+.pc.sel .pc-name{color:var(--green-dark)}
+
+/* ── COMPARE GRID ── */
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.cc{border-radius:8px;padding:11px 13px;background:var(--gray-50);border:1.5px solid transparent;cursor:pointer;transition:.15s}
+.cc:hover{border-color:#c0dd97}
+.cc.cur-green{background:var(--green-light);border-color:var(--green);box-shadow:0 0 0 2px rgba(15,110,86,.1)}
+.cc.cur-blue{background:var(--blue-light);border-color:var(--blue);box-shadow:0 0 0 2px rgba(24,95,165,.1)}
+.cc-dur{font-size:10px;font-weight:700;color:var(--gray-400);text-transform:uppercase;margin-bottom:4px}
+.cc.cur-green .cc-dur{color:var(--green-dark)}
+.cc-month{font-size:15px;font-weight:700;color:#111}
+.cc.cur-green .cc-month{color:var(--green)}
+.cc-int{font-size:11px;color:var(--gray-400);margin-top:2px}
+
+/* ── CHART ── */
+.chart-container{position:relative;height:250px}
+
+/* ── MONTHLY BIG NUM ── */
+.monthly-hero{font-size:40px;font-weight:700;line-height:1;margin-bottom:3px}
+.monthly-sub{font-size:12px;color:var(--gray-400);margin-bottom:16px}
+
+/* ── INFO BOX ── */
+.info-box{background:var(--blue-light);border-radius:8px;padding:11px 14px;font-size:12px;color:#0C447C;line-height:1.55;margin-bottom:14px}
+.info-box.green{background:var(--green-light);color:var(--green-dark)}
+
+/* ── SCROLLABLE TABLE WRAPPER ── */
+.table-scroll{overflow-x:auto}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — mobile-first, all breakpoints
+══════════════════════════════════════════ */
+
+/* Touch targets — ensure minimum 44px on mobile */
+button,input[type=range],.lang-btn,.lang-opt,.tab-btn,.collapse-btn,.lt-card,.pc,.cc{
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+}
+.num-box input{font-size:16px}/* prevent iOS zoom on focus */
+
+/* ── xs: phones portrait ≤ 480px ── */
+@media(max-width:480px){
+  .top-nav{
+    padding:0 12px;
+    height:auto;
+    min-height:56px;
+    flex-wrap:wrap;
+    gap:0;
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+  .brand{font-size:14px;margin-right:0;order:1;flex:1}
+  .lang-wrap{order:2;margin-left:auto}
+  .nav-tabs{
+    order:3;
+    width:100%;
+    border-top:1px solid #eee;
+    margin-top:6px;
+    padding-top:4px;
+    height:auto;
+    gap:0;
+  }
+  .nav-tab{
+    font-size:12px;
+    padding:8px 10px;
+    border-bottom:3px solid transparent;
+    flex:1;
+    text-align:center;
+    height:auto;
+    line-height:1.3;
+  }
+  .nav-actions{
+    order:4;
+    width:100%;
+    border-top:1px solid #eee;
+    padding:6px 0 4px;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+  .btn{padding:6px 10px;font-size:12px}
+  #save-btn svg{display:none}
+  .page{padding:12px}
+  .kpi-band{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+  .kpi-card{padding:12px 13px}
+  .kpi-value{font-size:17px}
+  .kpi-label{font-size:9px;letter-spacing:.04em}
+  .section-card{padding:14px 14px;margin-bottom:12px}
+  .grid-2,.grid-3{grid-template-columns:1fr;gap:12px}
+  .loan-type-grid{grid-template-columns:1fr;gap:8px}
+  .purpose-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+  .pc{padding:10px 8px}
+  .pc-name{font-size:10px}
+  .input-row{grid-template-columns:1fr;gap:6px}
+  .num-box{min-width:unset;width:100%;height:44px}
+  .num-box input{font-size:16px}
+  .field-label{flex-direction:column;align-items:flex-start;gap:2px}
+  .field-label .range-hint{font-size:10px}
+  input[type=range]{height:20px}/* larger touch target */
+  input[type=range]::-webkit-slider-thumb{width:24px;height:24px}
+  .monthly-hero{font-size:30px}
+  .bar-lbl{min-width:80px;font-size:11px}
+  .bar-val{min-width:70px;font-size:11px}
+  .compare-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .cc{padding:8px 9px}
+  .cc-month{font-size:13px}
+  .chart-container{height:200px}
+  .data-table{font-size:11px}
+  .data-table th,.data-table td{padding:6px 7px}
+  .table-scroll{-webkit-overflow-scrolling:touch}
+  .info-box{font-size:11px;padding:9px 11px}
+  .state-badge{font-size:10px;padding:3px 9px}
+  .tab-bar{gap:4px}
+  .tab-btn{padding:5px 11px;font-size:12px}
+  .lang-btn{padding:5px 8px;font-size:11px}
+}
+
+/* ── sm: phones landscape / large phones ≤ 640px ── */
+@media(min-width:481px) and (max-width:640px){
+  .top-nav{padding:0 16px;height:56px}
+  .brand{font-size:14px;margin-right:16px}
+  .nav-tab{padding:0 12px;font-size:13px}
+  .btn{padding:6px 12px;font-size:12px}
+  .page{padding:16px}
+  .kpi-band{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi-value{font-size:18px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .loan-type-grid{grid-template-columns:1fr 1fr}
+  .purpose-grid{grid-template-columns:repeat(4,1fr)}
+  .input-row{grid-template-columns:1fr auto}
+  .num-box{min-width:110px}
+  .num-box input{font-size:16px}
+  input[type=range]{height:18px}
+  input[type=range]::-webkit-slider-thumb{width:22px;height:22px}
+  .monthly-hero{font-size:32px}
+  .bar-lbl{min-width:90px}
+  .chart-container{height:200px}
+  .compare-grid{grid-template-columns:repeat(auto-fill,minmax(85px,1fr))}
+  .table-scroll{-webkit-overflow-scrolling:touch}
+}
+
+/* ── md: tablets portrait ≤ 768px ── */
+@media(min-width:641px) and (max-width:768px){
+  .top-nav{padding:0 20px;height:58px}
+  .brand{margin-right:20px;font-size:15px}
+  .nav-tab{padding:0 14px;font-size:13px}
+  .page{padding:20px}
+  .kpi-band{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-value{font-size:19px}
+  .grid-2{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr 1fr}
+  .loan-type-grid{grid-template-columns:1fr 1fr 1fr}
+  .purpose-grid{grid-template-columns:repeat(4,1fr)}
+  .num-box input{font-size:16px}
+  input[type=range]{height:18px}
+  input[type=range]::-webkit-slider-thumb{width:20px;height:20px}
+  .monthly-hero{font-size:34px}
+  .chart-container{height:220px}
+  .btn{padding:6px 13px;font-size:12px}
+  .nav-actions{gap:6px}
+}
+
+/* ── lg: tablets landscape / small laptops ≤ 1024px ── */
+@media(min-width:769px) and (max-width:1024px){
+  .top-nav{padding:0 24px}
+  .page{padding:22px 24px}
+  .kpi-band{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .grid-2{grid-template-columns:1fr 1fr}
+  .grid-3{grid-template-columns:1fr 1fr 1fr}
+  .kpi-value{font-size:20px}
+  .btn{padding:6px 14px;font-size:13px}
+  .nav-actions{gap:7px}
+}
+
+/* ── xl: desktops ≥ 1025px ── */
+@media(min-width:1025px){
+  .top-nav{padding:0 32px;height:60px}
+  .page{padding:28px 32px}
+}
+
+/* ── Safe area for iPhone notch/home bar ── */
+@supports(padding:env(safe-area-inset-left)){
+  .top-nav{
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
+  }
+  .page{
+    padding-left:max(12px,env(safe-area-inset-left));
+    padding-right:max(12px,env(safe-area-inset-right));
+  }
+  #restore-toast{
+    bottom:max(24px,calc(env(safe-area-inset-bottom) + 12px));
+    right:max(24px,env(safe-area-inset-right));
+  }
+}
+
+/* ── Smooth scrolling ── */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+
+/* ── ── */
+@media(max-width:700px){
+  /* keep existing general mobile tweaks */
+  .nav-actions .btn[onclick*="clearState"]{display:none}/* hide Reset on very small - visible in menu */
+}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff}
+  .top-nav,.nav-actions,.collapse-btn,.tab-bar,.btn,.lang-wrap{display:none!important}
+  .page{padding:0;display:block!important}
+  .section-card{border:1px solid #e0e0e0!important;break-inside:avoid;margin-bottom:10px}
+  .kpi-card{break-inside:avoid}
+  .kpi-band{grid-template-columns:repeat(4,1fr)!important}
+  .grid-2{grid-template-columns:1fr 1fr!important}
+  .grid-3{grid-template-columns:1fr 1fr 1fr!important}
+}
+
+/* ── LANGUAGE SWITCHER ── */
+.lang-wrap{position:relative;margin-left:8px}
+.lang-btn{display:flex;align-items:center;gap:5px;padding:5px 11px;border:1px solid #ddd;border-radius:7px;background:#fff;font-size:12px;font-weight:600;color:#333;cursor:pointer;height:32px;white-space:nowrap}
+.lang-btn:hover{background:#f8f9fa}
+.lang-dd{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid #e0e0e0;border-radius:9px;padding:5px;min-width:130px;z-index:999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.lang-dd.open{display:block}
+.lang-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;color:#333}
+.lang-opt:hover{background:#f8f9fa}
+.lang-opt.active{background:#E6F1FB;color:#0C447C}
+
+/* ── MOBILE-SPECIFIC ENHANCEMENTS ── */
+
+/* Save button label hides on very small */
+@media(max-width:380px){
+  .save-label{display:none}
+  .btn{padding:6px 9px}
+  .kpi-value{font-size:15px}
+}
+
+/* Donut canvas scales on mobile */
+@media(max-width:480px){
+  #m-donut{width:110px!important;height:110px!important}
+  .da,.donut-area{flex-direction:column;align-items:center;text-align:center}
+}
+
+/* Prevent overscroll bounce ruining layout on iOS */
+body{overscroll-behavior-y:contain}
+
+/* Table horizontal scroll with momentum on iOS */
+.table-scroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* Better tap states for iOS */
+@media(hover:none){
+  .btn:hover{background:#fff}
+  .tab-btn:hover{background:#fff}
+  .lt-card:hover{border-color:#e0e0e0;background:#fff}
+  .cc:hover{border-color:transparent}
+  .pc:hover{border-color:#e0e0e0;background:#fff}
+  .collapse-btn:hover{background:#fff}
+  .lang-btn:hover{background:#fff}
+  .lang-opt:hover{background:#fff}
+}
+
+/* Focus ring for keyboard nav (desktop) */
+@media(hover:hover){
+  .btn:focus-visible,.tab-btn:focus-visible,.nav-tab:focus-visible{
+    outline:2px solid var(--blue);
+    outline-offset:2px;
+  }
+}
+
+/* Sticky KPI band on tablets+ */
+@media(min-width:641px){
+  .kpi-band-sticky{
+    position:sticky;
+    top:60px;
+    z-index:90;
+    background:#f4f6f9;
+    padding-top:12px;
+    margin-top:-12px;
+  }
+}
+
+/* iPhone landscape: nav doesn't wrap */
+@media(max-height:400px) and (orientation:landscape){
+  .top-nav{height:50px;flex-wrap:nowrap;padding:0 12px}
+  .nav-tabs{height:50px}
+  .nav-tab{height:50px;padding:0 12px;font-size:12px}
+  .nav-actions{gap:5px}
+  .btn{padding:5px 9px;font-size:11px}
+  .page{padding:10px 14px}
+  .kpi-band{margin-bottom:10px;gap:8px}
+}
+
+/* iPad Pro / large tablets */
+@media(min-width:1024px) and (max-width:1366px){
+  .page{max-width:960px}
+}
+
+/* Windows 11 / large desktop */
+@media(min-width:1440px){
+  .page{max-width:1100px}
+  .kpi-value{font-size:24px}
+}
+</style>
+<script id="saved-state" type="application/json">{}</script>
+</head>
+<body>
+
+<nav class="top-nav" id="top-nav">
+  <div class="brand">German <span>Loan</span> Calculator</div>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active-mort" id="tab-mort" onclick="switchPage('mortgage')">Mortgage Calculator</button>
+    <button class="nav-tab" id="tab-loan" onclick="switchPage('personal')">Personal Loan Calculator</button>
+  </div>
+  <div class="nav-actions" id="nav-actions">
+    <button class="btn" onclick="clearState()" title="Clear saved data and reload defaults" style="color:#c0392b;border-color:#f5c6c6">Reset</button>
+    <button class="btn" id="save-btn" onclick="saveToFile()" style="font-weight:600;background:#0F6E56;color:#fff;border-color:#0F6E56" title="Downloads this file with your current inputs embedded.">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="vertical-align:-2px;margin-right:5px"><path d="M7 1v8M4 6l3 3 3-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span class="save-label">Save to file</span>
+    </button>
+    <button class="btn" onclick="doPrint()">Print</button>
+    <button class="btn btn-blue" id="pdf-btn" onclick="savePDF()">Save as PDF</button>
+    <div class="lang-wrap" id="lang-wrap">
+      <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
+        <span id="lang-flag">🇬🇧</span><span id="lang-code">EN</span>
+        <svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 3L4.5 6L7.5 3" stroke="#888" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>
+      </button>
+      <div class="lang-dd" id="lang-dd">
+        <div class="lang-opt active" id="lopt-en" onclick="setLang('en')">🇬🇧&nbsp; English</div>
+        <div class="lang-opt" id="lopt-de" onclick="setLang('de')">🇩🇪&nbsp; Deutsch</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     MORTGAGE PAGE
+══════════════════════════════════════════ -->
+<div id="restore-toast" style="display:none;position:fixed;bottom:24px;right:24px;z-index:200;background:#27500A;color:#fff;font-size:13px;font-weight:500;padding:10px 18px;border-radius:8px;opacity:0;transition:opacity .3s">
+  Saved inputs restored
+</div>
+<div class="page active" id="page-mortgage">
+
+  <div class="kpi-band kpi-band-sticky" id="m-kpi"></div>
+
+  <div class="grid-2">
+    <!-- PROPERTY DETAILS -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_property">Property details</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_price">Property price</span <span class="range-hint">€50k – €2M</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-price" min="50000" max="2000000" step="1000" value="500000" oninput="mFS('price')" class="blue-range">
+            <div class="num-box"><span class="pre">€</span><input type="text" id="m-i-price" value="500000" onchange="mFI('price')" onkeydown="mFK(event,'price')" onfocus="selAll(this)"></div>
+          </div>
+          <div class="slider-limits"><span>€50,000</span><span>€2,000,000</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_down">Down payment</span> <span class="range-hint">€0 – €1M</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-down" min="0" max="1000000" step="1000" value="100000" oninput="mFS('down')" class="blue-range">
+            <div class="num-box"><span class="pre">€</span><input type="text" id="m-i-down" value="100000" onchange="mFI('down')" onkeydown="mFK(event,'down')" onfocus="selAll(this)"></div>
+          </div>
+          <div class="slider-limits"><span>€0</span><span>€1,000,000</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_down_pct">Down payment percentage</span <span class="range-hint">0% – 80%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-downpct" min="0" max="80" step="0.1" value="20" oninput="mFS('downpct')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-downpct" value="20.0" onchange="mFI('downpct')" onkeydown="mFK(event,'downpct')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div class="slider-limits"><span>0%</span><span>80%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOAN SETTINGS -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_loan_settings">Loan settings</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_rate">Interest rate</span> <span class="range-hint">0.1% – 12%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-rate" min="0.1" max="12" step="0.01" value="3.5" oninput="mFS('rate')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-rate" value="3.50" onchange="mFI('rate')" onkeydown="mFK(event,'rate')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div class="slider-limits"><span>0.1%</span><span>12%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_tilgung">Repayment rate — Tilgung</span <span class="range-hint">0.1% – 15%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-repay" min="0.1" max="15" step="0.01" value="2" oninput="mFS('repay')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-repay" value="2.00" onchange="mFI('repay')" onkeydown="mFK(event,'repay')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div class="slider-limits"><span>0.1%</span><span>15%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_fixed">Fixed interest period</span <span class="range-hint">1 – 30 years</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-fixed" min="1" max="30" step="1" value="10" oninput="mFS('fixed')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-fixed" value="10" onchange="mFI('fixed')" onkeydown="mFK(event,'fixed')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">yrs</span></div>
+          </div>
+          <div class="slider-limits"><span>1 yr</span><span>30 yrs</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PURCHASE COSTS -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_purchase">Purchase costs</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-bottom:16px">
+        <div>
+          <div class="field-label" style="margin-bottom:8px" data-lk="fl_state">Federal state — auto-sets transfer tax</div>
+          <select class="state-select" id="m-state-sel" onchange="mOnState()">
+            <option value="">— Select your federal state —</option>
+            <option value="Bayern|3.5">Bayern (3.5%)</option>
+            <option value="Baden-Württemberg|5.0">Baden-Württemberg (5.0%)</option>
+            <option value="Berlin|6.0" selected>Berlin (6.0%)</option>
+            <option value="Brandenburg|6.5">Brandenburg (6.5%)</option>
+            <option value="Bremen|5.0">Bremen (5.0%)</option>
+            <option value="Hamburg|5.5">Hamburg (5.5%)</option>
+            <option value="Hessen|6.0">Hessen (6.0%)</option>
+            <option value="Mecklenburg-Vorpommern|6.0">Mecklenburg-Vorpommern (6.0%)</option>
+            <option value="Niedersachsen|5.0">Niedersachsen (5.0%)</option>
+            <option value="Nordrhein-Westfalen|6.5">Nordrhein-Westfalen (6.5%)</option>
+            <option value="Rheinland-Pfalz|5.0">Rheinland-Pfalz (5.0%)</option>
+            <option value="Saarland|6.5">Saarland (6.5%)</option>
+            <option value="Sachsen|5.5">Sachsen (5.5%)</option>
+            <option value="Sachsen-Anhalt|5.0">Sachsen-Anhalt (5.0%)</option>
+            <option value="Schleswig-Holstein|6.5">Schleswig-Holstein (6.5%)</option>
+            <option value="Thüringen|6.5">Thüringen (6.5%)</option>
+          </select>
+          <div class="state-badge" id="m-state-badge">Berlin — Transfer tax: 6.0%</div>
+        </div>
+        <div class="info-box" style="align-self:end">
+          <span data-lk="info_costs">Transfer tax (Grunderwerbsteuer) varies 3.5–6.5% by state. Notary + land registry ~1.5–2%. Agent commission typically 3.57% (shared) or negotiated. Include purchase costs in loan via toggle below.</span>
+        </div>
+      </div>
+      <div class="grid-3">
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_tax">Transfer tax (Grunderwerbsteuer)</span <span class="range-hint">0–10%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-tax" min="0" max="10" step="0.01" value="6" oninput="mFS('tax')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-tax" value="6.00" onchange="mFI('tax')" onkeydown="mFK(event,'tax')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div id="m-tax-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €30,000 on €500,000</div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_notary">Notary + land registry</span <span class="range-hint">0–5%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-notary" min="0" max="5" step="0.01" value="1.5" oninput="mFS('notary')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-notary" value="1.50" onchange="mFI('notary')" onkeydown="mFK(event,'notary')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div id="m-notary-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €7,500 on €500,000</div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_agent">Agent commission</span <span class="range-hint">0–8%</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-agent" min="0" max="8" step="0.01" value="1.5" oninput="mFS('agent')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-agent" value="1.50" onchange="mFI('agent')" onkeydown="mFK(event,'agent')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div id="m-agent-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €7,500 on €500,000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- COST BREAKDOWN -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_breakdown">Cost breakdown</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;gap:20px;align-items:center">
+          <canvas id="m-donut" width="140" height="140" style="width:140px;height:140px;flex-shrink:0"></canvas>
+          <div style="flex:1" id="m-legend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONTHLY PAYMENT -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_monthly">Monthly payment</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div class="monthly-hero accent-blue" id="m-monthly-big" style="color:var(--blue-dark)">€0</div>
+        <div class="monthly-sub">per month</div>
+        <div id="m-monthly-bars"></div>
+        <div class="divider"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px">
+          <span style="color:var(--gray-600)" data-lk="incl_costs">Include purchase costs in loan</span>
+          <label class="tog-wrap" style="position:relative;width:42px;height:24px;cursor:pointer">
+            <input type="checkbox" id="m-incl" onchange="mCalc()" style="opacity:0;width:0;height:0">
+            <span class="tog-track" style="position:absolute;inset:0;border-radius:12px;background:#ddd;transition:.2s"></span>
+            <span class="tog-thumb" style="position:absolute;width:18px;height:18px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXTRA REPAYMENTS -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_extra">Extra repayments (Sondertilgung)</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_extra">Annual extra payment</span <span class="range-hint">€0 – €100k</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-extra" min="0" max="100000" step="500" value="0" oninput="mFS('extra')" class="blue-range">
+            <div class="num-box"><span class="pre">€</span><input type="text" id="m-i-extra" value="0" onchange="mFI('extra')" onkeydown="mFK(event,'extra')" onfocus="selAll(this)"></div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_estart">Start from year</span <span class="range-hint">1 – 20</span></div>
+          <div class="input-row">
+            <input type="range" id="m-s-estart" min="1" max="20" step="1" value="1" oninput="mFS('estart')" class="blue-range">
+            <div class="num-box"><input type="text" id="m-i-estart" value="1" onchange="mFI('estart')" onkeydown="mFK(event,'estart')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">yr</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-3" id="m-extra-kpis"></div>
+    </div>
+  </div>
+
+  <!-- AMORTIZATION -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="tab-bar">
+        <button class="tab-btn active-blue" onclick="mSetView('annual',this)" data-lk-tab="tab_annual">Annual summary</button>
+        <button class="tab-btn" onclick="mSetView('monthly',this)" data-lk-tab="tab_monthly">Monthly detail</button>
+      </div>
+      <div class="table-scroll" id="m-amort-wrap"></div>
+    </div>
+  </div>
+</div><!-- end #page-mortgage -->
+
+
+<!-- ══════════════════════════════════════════
+     PERSONAL LOAN PAGE
+══════════════════════════════════════════ -->
+<div class="page" id="page-personal">
+
+  <div class="kpi-band kpi-band-sticky" id="p-kpi"></div>
+
+  <!-- LOAN TYPE -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_type">Loan type</span>
+    </div>
+    <div class="loan-type-grid">
+      <div class="lt-card sel" onclick="pSelType(this,'personal',6.9)" data-info-key="lt_personal_info">
+        <div class="lt-name" data-lk="lt_personal">Personal loan (Ratenkredit)</div>
+        <div class="lt-rate">~6.9%</div>
+        <div class="lt-desc" data-lk="lt_personal_desc">No collateral needed. Fixed monthly rate. Most common consumer loan in Germany.</div>
+      </div>
+      <div class="lt-card" onclick="pSelType(this,'car',4.9)" data-info-key="lt_car_info">
+        <div class="lt-name" data-lk="lt_car">Car loan (Autokredit)</div>
+        <div class="lt-rate">~4.9%</div>
+        <div class="lt-desc" data-lk="lt_car_desc">Secured against the vehicle. Lower rate. Comprehensive insurance usually required.</div>
+      </div>
+      <div class="lt-card" onclick="pSelType(this,'renovation',5.5)" data-info-key="lt_reno_info">
+        <div class="lt-name" data-lk="lt_reno">Home renovation</div>
+        <div class="lt-rate">~5.5%</div>
+        <div class="lt-desc" data-lk="lt_reno_desc">KfW-backed renovation loans available with subsidised rates for energy-efficiency works.</div>
+      </div>
+    </div>
+    <div class="info-box green" id="p-rate-info">Personal loan (Ratenkredit): typical rate 5–12% p.a. depending on creditworthiness (Bonität / Schufa score). Representative example at 6.9% p.a.</div>
+  </div>
+
+  <!-- PURPOSE -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_purpose">Loan purpose</span>
+      <span style="font-size:11px;color:var(--gray-400)" data-lk-opt="optional">Optional — for your records</span>
+    </div>
+    <div class="purpose-grid">
+      <div class="pc" onclick="pSelPurpose(this,'pc_debt')"><div class="pc-icon"><svg width="20" height="18" viewBox="0 0 20 18"><rect x="1" y="1" width="18" height="3.5" rx="1.5" fill="#0F6E56"/><rect x="1" y="7" width="13" height="3.5" rx="1.5" fill="#5DCAA5"/><rect x="1" y="13" width="8" height="3.5" rx="1.5" fill="#9FE1CB"/></svg></div><div class="pc-name" data-lk="pc_debt">Debt consolidation</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_car')"><div class="pc-icon"><svg width="22" height="16" viewBox="0 0 22 16"><rect x="1" y="5" width="20" height="8" rx="2.5" fill="#0F6E56"/><path d="M4 5 L7 1 H15 L18 5" fill="#5DCAA5"/><circle cx="5.5" cy="13.5" r="2.5" fill="#085041"/><circle cx="16.5" cy="13.5" r="2.5" fill="#085041"/></svg></div><div class="pc-name" data-lk="pc_car">Car purchase</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_reno')"><div class="pc-icon"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M2 10 L10 2 L18 10" stroke="#0F6E56" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="5" y="10" width="10" height="9" rx="1" fill="#5DCAA5"/><rect x="8" y="13" width="4" height="6" rx="0.5" fill="#085041"/></svg></div><div class="pc-name" data-lk="pc_reno">Home renovation</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_elec')"><div class="pc-icon"><svg width="20" height="18" viewBox="0 0 20 18"><rect x="1" y="1" width="18" height="12" rx="2" fill="#5DCAA5"/><rect x="3" y="3" width="14" height="8" rx="1" fill="#EAF3DE"/><rect x="7" y="14" width="6" height="2" rx="1" fill="#0F6E56"/><rect x="5.5" y="16" width="9" height="1.5" rx="0.75" fill="#0F6E56"/></svg></div><div class="pc-name" data-lk="pc_elec">Electronics</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_travel')"><div class="pc-icon"><svg width="22" height="18" viewBox="0 0 22 18"><ellipse cx="11" cy="9" rx="9" ry="7" stroke="#0F6E56" stroke-width="2" fill="none"/><ellipse cx="11" cy="9" rx="4" ry="7" stroke="#5DCAA5" stroke-width="1.5" fill="none"/><line x1="2" y1="9" x2="20" y2="9" stroke="#0F6E56" stroke-width="1.5"/></svg></div><div class="pc-name" data-lk="pc_travel">Travel</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_wedding')"><div class="pc-icon"><svg width="18" height="20" viewBox="0 0 18 20"><path d="M9 2C6 2 2.5 5 2.5 8.5C2.5 14 9 19 9 19C9 19 15.5 14 15.5 8.5C15.5 5 12 2 9 2Z" fill="#5DCAA5"/><path d="M9 7L10.2 9.4 13 9.8 11 11.7 11.5 14.5 9 13.2 6.5 14.5 7 11.7 5 9.8 7.8 9.4Z" fill="#0F6E56"/></svg></div><div class="pc-name" data-lk="pc_wedding">Wedding</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_edu')"><div class="pc-icon"><svg width="22" height="18" viewBox="0 0 22 18"><path d="M11 1.5L1 7L11 12.5L21 7Z" fill="#0F6E56"/><path d="M5 9.5V14C5 15.5 7.5 17 11 17C14.5 17 17 15.5 17 14V9.5" stroke="#5DCAA5" stroke-width="2" fill="none"/></svg></div><div class="pc-name" data-lk="pc_edu">Education</div></div>
+      <div class="pc" onclick="pSelPurpose(this,'pc_other')"><div class="pc-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.5" stroke="#5DCAA5" stroke-width="2" fill="none"/><circle cx="10" cy="10" r="3" fill="#0F6E56"/></svg></div><div class="pc-name" data-lk="pc_other">Other</div></div>
+    </div>
+    <div id="p-purpose-badge" style="display:none;background:var(--green-light);color:var(--green-dark);font-size:11px;font-weight:700;padding:4px 14px;border-radius:20px;display:inline-block"></div>
+  </div>
+
+  <!-- LOAN PARAMETERS -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_params">Loan parameters</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="grid-3">
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_amt">Loan amount</span> <span class="range-hint">€500 – €100k</span></div>
+          <div class="input-row">
+            <input type="range" id="p-s-amt" min="500" max="100000" step="500" value="10000" oninput="pFS('amt')" class="green-range">
+            <div class="num-box green"><span class="pre">€</span><input type="text" id="p-i-amt" value="10000" onchange="pFI('amt')" onkeydown="pFK(event,'amt')" onfocus="selAll(this)"></div>
+          </div>
+          <div class="slider-limits"><span>€500</span><span>€100,000</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_dur">Duration</span> <span class="range-hint">1 – 30 years</span></div>
+          <div class="input-row">
+            <input type="range" id="p-s-dur" min="1" max="30" step="1" value="5" oninput="pFS('dur')" class="green-range">
+            <div class="num-box green"><input type="text" id="p-i-dur" value="5" onchange="pFI('dur')" onkeydown="pFK(event,'dur')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">yrs</span></div>
+          </div>
+          <div class="slider-limits"><span>1 yr</span><span>30 yrs</span></div>
+        </div>
+        <div class="field">
+          <div class="field-label"><span data-lk="fl_rate_pa">Interest rate (p.a.)</span <span class="range-hint">0.1% – 20%</span></div>
+          <div class="input-row">
+            <input type="range" id="p-s-rate" min="0.1" max="20" step="0.01" value="6.9" oninput="pFS('rate')" class="green-range">
+            <div class="num-box green"><input type="text" id="p-i-rate" value="6.90" onchange="pFI('rate')" onkeydown="pFK(event,'rate')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
+          </div>
+          <div class="slider-limits"><span>0.1%</span><span>20%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <!-- REPAYMENT OVERVIEW -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_overview">Repayment overview</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div class="monthly-hero" id="p-monthly-big" style="color:var(--green-dark)">€0</div>
+        <div class="monthly-sub">per month</div>
+        <div id="p-repay-bars"></div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span style="color:var(--gray-600)" id="p-total-rep-lbl">Total repayment</span><span style="font-weight:700" id="p-total-rep">€0</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span style="color:var(--gray-600)" id="p-int-ratio-lbl">Interest cost ratio</span><span style="font-weight:700" id="p-int-ratio">0%</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:3px 0"><span style="color:var(--gray-600)" id="p-cost-k-lbl">Cost per €1,000 borrowed</span><span style="font-weight:700" id="p-cost-k">€0/mo</span></div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="section-card">
+      <div class="section-header">
+        <span class="section-title" data-lk="sec_chart">Principal vs interest by year</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div class="card-body">
+        <div class="chart-container"><canvas id="p-chart"></canvas></div>
+        <div style="display:flex;gap:16px;justify-content:center;font-size:12px;color:var(--gray-400);margin-top:8px">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:var(--green)"></div><span data-lk-chart="chart_principal">Principal</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;border-radius:3px;background:#EF9F27"></div><span data-lk-chart="chart_interest">Interest</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE DURATIONS -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_compare">Compare durations</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="compare-grid" id="p-compare"></div>
+    </div>
+  </div>
+
+  <!-- AMORTIZATION -->
+  <div class="section-card">
+    <div class="section-header">
+      <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
+      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    </div>
+    <div class="card-body">
+      <div class="tab-bar">
+        <button class="tab-btn active-green" onclick="pSetView('annual',this)" data-lk-tab="tab_ann">Annual</button>
+        <button class="tab-btn" onclick="pSetView('monthly',this)" data-lk-tab="tab_mo">Monthly</button>
+      </div>
+      <div class="table-scroll" id="p-amort-wrap"></div>
+    </div>
+  </div>
+</div><!-- end #page-personal -->
+
+<script>
+/* ════════════════════════════════════
+   UTILITIES
+════════════════════════════════════ */
+function selAll(el){setTimeout(()=>el.select(),0);}
+function fe(n){return'€'+Math.round(n).toLocaleString('de-DE');}
+function fe2(n){return'€'+(Math.round(n*100)/100).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function parseNum(s){
+  s=String(s).trim().replace(/[€%\s]/g,'');
+  const hc=s.includes(','),hd=s.includes('.');
+  if(hc&&hd){const ci=s.lastIndexOf(','),di=s.lastIndexOf('.');s=ci>di?s.replace(/\./g,'').replace(',','.'):s.replace(/,/g,'');}
+  else if(hc){const p=s.split(',');s=(p.length===2&&p[1].length<=2)?s.replace(',','.'):s.replace(/,/g,'');}
+  else if(hd){const p=s.split('.');if(!(p.length===2&&p[1].length<=2))s=s.replace(/\./g,'');}
+  const n=parseFloat(s);return isNaN(n)?0:n;
+}
+
+function updateSliderFill(el){
+  const min=parseFloat(el.min),max=parseFloat(el.max),val=parseFloat(el.value);
+  const pct=(val-min)/(max-min)*100;
+  el.style.setProperty('--pct',pct.toFixed(2)+'%');
+}
+
+function togCard(btn){
+  const body=btn.closest('.section-card').querySelector('.card-body');
+  if(!body)return;
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'':'none';
+  btn.textContent=hidden?'Collapse':'Expand';
+}
+
+function switchPage(p){
+  document.getElementById('page-mortgage').classList.toggle('active',p==='mortgage');
+  document.getElementById('page-personal').classList.toggle('active',p==='personal');
+  document.getElementById('tab-mort').className='nav-tab'+(p==='mortgage'?' active-mort':'');
+  document.getElementById('tab-loan').className='nav-tab'+(p==='personal'?' active-loan':'');
+  const pdfBtn=document.getElementById('pdf-btn');
+  pdfBtn.className=p==='mortgage'?'btn btn-blue':'btn btn-green';
+  pdfBtn.textContent='Save as PDF';
+
+}
+
+function doPrint(){window.print();}
+
+/* ═══════════════════════════
+   TOGGLE SWITCH STYLING
+═══════════════════════════ */
+document.addEventListener('change',function(e){
+  if(e.target.id==='m-incl'){
+    const track=e.target.nextElementSibling;
+    const thumb=track.nextElementSibling;
+    if(e.target.checked){track.style.background='var(--blue)';thumb.style.transform='translateX(18px)';}
+    else{track.style.background='#ddd';thumb.style.transform='translateX(0)';}
+  }
+});
+
+
+/* ════════════════════════════════════
+   MORTGAGE STATE & CONFIG
+════════════════════════════════════ */
+const MC={
+  price:{min:50000,max:2000000,step:1000,dec:0},
+  down:{min:0,max:1000000,step:1000,dec:0},
+  downpct:{min:0,max:80,step:0.1,dec:1},
+  rate:{min:0.1,max:12,step:0.01,dec:2},
+  repay:{min:0.1,max:15,step:0.01,dec:2},
+  fixed:{min:1,max:30,step:1,dec:0},
+  tax:{min:0,max:10,step:0.01,dec:2},
+  notary:{min:0,max:5,step:0.01,dec:2},
+  agent:{min:0,max:8,step:0.01,dec:2},
+  extra:{min:0,max:100000,step:500,dec:0},
+  estart:{min:1,max:20,step:1,dec:0}
+};
+let MV={price:500000,down:100000,downpct:20,rate:3.5,repay:2,fixed:10,tax:6,notary:1.5,agent:1.5,extra:0,estart:1};
+let mLock=false, mAmortView='annual', mSegs=[], mAnn={};
+
+function mDV(k,v){return MC[k].dec===0?String(Math.round(v)):v.toFixed(MC[k].dec);}
+function mSS(k,v){const e=document.getElementById('m-s-'+k);if(e){e.value=v;updateSliderFill(e);}}
+function mSI(k,v){const e=document.getElementById('m-i-'+k);if(e)e.value=mDV(k,v);}
+function mClamp(k,v){return Math.min(MC[k].max,Math.max(MC[k].min,v));}
+
+function mAV(k,v){
+  v=mClamp(k,v);
+  v=MC[k].dec===0?Math.round(v):parseFloat(v.toFixed(MC[k].dec));
+  MV[k]=v;mSS(k,v);mSI(k,v);
+  if(!mLock){
+    mLock=true;
+    if(k==='price'){
+      document.getElementById('m-s-down').max=Math.max(v,500000);
+      MV.down=Math.round(MV.downpct/100*v);mSS('down',MV.down);mSI('down',MV.down);
+    }
+    if(k==='down'){MV.downpct=MV.price>0?parseFloat((v/MV.price*100).toFixed(1)):0;mSS('downpct',MV.downpct);mSI('downpct',MV.downpct);}
+    if(k==='downpct'){MV.down=Math.round(MV.price*v/100);mSS('down',MV.down);mSI('down',MV.down);}
+    mLock=false;
+  }
+}
+function mFS(k){const e=document.getElementById('m-s-'+k);updateSliderFill(e);mAV(k,parseFloat(e.value));mCalc();}
+function mFI(k){mAV(k,parseNum(document.getElementById('m-i-'+k).value));mCalc();}
+function mFK(e,k){if(e.key==='Enter'||e.key==='Tab'){mFI(k);}else if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();mAV(k,mClamp(k,MV[k]+MC[k].step*(e.key==='ArrowUp'?1:-1)));mCalc();}}
+
+function mOnState(){
+  const v=document.getElementById('m-state-sel').value;if(!v)return;
+  const[n,t]=v.split('|');
+  const taxVal=parseFloat(t);
+  MV.tax=taxVal;
+  const sTax=document.getElementById('m-s-tax');
+  const iTax=document.getElementById('m-i-tax');
+  sTax.value=taxVal;
+  iTax.value=taxVal.toFixed(2);
+  updateSliderFill(sTax);
+  document.getElementById('m-state-badge').textContent=n+' — '+T('state_tax')+' '+taxVal.toFixed(1)+'%';
+  mCalc();
+}
+
+function mAmortRows(loan,rate,repay,extra,estart){
+  const r=rate/100/12,base=loan*(rate+repay)/100/12;
+  let bal=loan,rows=[];
+  for(let m=1;m<=480;m++){
+    if(bal<0.01)break;
+    const interest=bal*r;
+    let principal=base-interest;
+    if(extra>0&&Math.ceil(m/12)>=estart)principal+=extra/12;
+    if(principal<0)principal=0;
+    if(principal>bal)principal=bal;
+    bal=Math.max(0,bal-principal);
+    rows.push({m,yr:Math.ceil(m/12),interest,principal,bal});
+  }
+  return rows;
+}
+
+function mCalc(){
+  const{price,down,rate,repay,fixed,tax,notary,agent,extra,estart}=MV;
+  const tA=price*tax/100,nA=price*notary/100,aA=price*agent/100,costs=tA+nA+aA;
+  const incl=document.getElementById('m-incl').checked;
+  const loan=Math.max(0,price-down+(incl?costs:0));
+  const mr=loan*(rate+repay)/100/12;
+  const mi=loan*rate/100/12,mp=mr-mi;
+  const rows=mAmortRows(loan,rate,repay,extra,estart);
+  const rowsB=mAmortRows(loan,rate,repay,0,1);
+  const totI=rows.reduce((s,r)=>s+r.interest,0);
+  const baseI=rowsB.reduce((s,r)=>s+r.interest,0);
+  const saved=extra>0?Math.max(0,baseI-totI):0;
+  const lastR=rows[rows.length-1],freeYr=lastR?Math.ceil(lastR.m/12):0;
+
+  document.getElementById('m-kpi').innerHTML=`
+    <div class="kpi-card accent-blue"><div class="kpi-label">${T('kpi_loan')}</div><div class="kpi-value">${fe(loan)}</div><div class="kpi-sub">${price>0?(loan/price*100).toFixed(1)+T('kpi_ltv'):''}</div></div>
+    <div class="kpi-card accent-blue"><div class="kpi-label">${T('kpi_monthly')}</div><div class="kpi-value">${fe(mr)}</div><div class="kpi-sub">${T('kpi_per_month')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${T('kpi_purchase')}</div><div class="kpi-value">${fe(price+costs)}</div><div class="kpi-sub">${T('kpi_incl')} ${fe(costs)} ${T('kpi_fees')}</div></div>
+    <div class="kpi-card accent-amber"><div class="kpi-label">${T('kpi_interest')}</div><div class="kpi-value">${fe(totI)}</div><div class="kpi-sub">${T('kpi_full_term')}</div></div>`;
+
+  const loanPctOfPrice=price>0?(loan/price*100):0;
+  const downPctOfPrice=price>0?(down/price*100):0;
+  mSegs=[
+    {l:T('leg_loan'),v:loan,c:'#185FA5',rate:null,pct:loanPctOfPrice},
+    {l:T('leg_down'),v:down,c:'#1D9E75',rate:null,pct:downPctOfPrice},
+    {l:T('leg_tax'),v:tA,c:'#D85A30',rate:tax,pct:null},
+    {l:T('leg_notary'),v:nA,c:'#BA7517',rate:notary,pct:null},
+    {l:T('leg_agent'),v:aA,c:'#D4537E',rate:agent,pct:null}
+  ];
+  mDrawDonut();
+  const tot2=mSegs.reduce((s,x)=>s+x.v,0);
+  document.getElementById('m-legend').innerHTML=mSegs.map(x=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:12px">
+      <div style="width:10px;height:10px;border-radius:50%;flex-shrink:0;background:${x.c}"></div>
+      <span style="flex:1;color:var(--gray-600)">
+        ${x.l}
+        ${x.rate!==null?'<span style=\'color:#aaa;font-size:11px\'> @ '+x.rate.toFixed(2)+'%</span>':''}
+        ${x.pct!==null?'<span style=\'color:#aaa;font-size:11px\'> ('+x.pct.toFixed(1)+'% '+T('leg_of_price')+')</span>':''}
+      </span>
+      <span style="font-weight:700;color:#111;min-width:75px;text-align:right">${fe(x.v)}</span>
+    </div>`).join('');
+
+  document.getElementById('m-monthly-big').textContent=fe(mr);
+  document.getElementById('m-monthly-bars').innerHTML=[{l:T('bar_interest'),v:mi,c:'#D85A30'},{l:T('bar_principal'),v:mp,c:'#185FA5'}].map(x=>{
+    const p=mr>0?x.v/mr*100:0;
+    return`<div class="bar-row"><span class="bar-lbl">${x.l}</span><div class="bar-bg"><div class="bar-fill" style="width:${p.toFixed(1)}%;background:${x.c}"></div></div><span class="bar-val">${fe(x.v)}</span></div>`;
+  }).join('');
+
+  document.getElementById('m-extra-kpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-label">${T('kpi_free')}</div><div class="kpi-value">${freeYr} ${T('kpi_yrs')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${T('kpi_saved')}</div><div class="kpi-value">${fe(saved)}</div></div>
+    <div class="kpi-card accent-amber"><div class="kpi-label">${T('kpi_tot_int')}</div><div class="kpi-value">${fe(totI)}</div></div>`;
+
+  mAnn={};rows.forEach(r=>{if(!mAnn[r.yr])mAnn[r.yr]={yr:r.yr,int:0,prin:0,bal:0,tp:0};mAnn[r.yr].int+=r.interest;mAnn[r.yr].prin+=r.principal;mAnn[r.yr].bal=r.bal;mAnn[r.yr].tp+=r.interest+r.principal;});
+
+  const taxHint=document.getElementById('m-tax-applied');
+  const notHint=document.getElementById('m-notary-applied');
+  const agtHint=document.getElementById('m-agent-applied');
+  if(taxHint)taxHint.textContent=tax.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(tA);
+  if(notHint)notHint.textContent=notary.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(nA);
+  if(agtHint)agtHint.textContent=agent.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(aA);
+
+  mRenderAmort(rows,fixed);
+}
+
+function mDrawDonut(){
+  const c=document.getElementById('m-donut'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,140,140);
+  const tot=mSegs.reduce((s,x)=>s+x.v,0);
+  let ang=-Math.PI/2;
+  mSegs.forEach(s=>{
+    const sw=tot>0?s.v/tot*Math.PI*2:0;
+    if(sw<0.001)return;
+    ctx.beginPath();ctx.moveTo(70,70);ctx.arc(70,70,62,ang,ang+sw);ctx.closePath();
+    ctx.fillStyle=s.c;ctx.fill();ang+=sw;
+  });
+  ctx.beginPath();ctx.arc(70,70,38,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+}
+
+function mRenderAmort(rows,fixed){
+  const w=document.getElementById('m-amort-wrap');
+  if(mAmortView==='annual'){
+    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th><th style="width:130px">${T('th_note')}</th></tr></thead><tbody>${Object.values(mAnn).map(y=>`<tr class="${y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe(y.int)}</td><td>${fe(y.prin)}</td><td>${fe(y.tp)}</td><td>${fe(y.bal)}</td><td class="note-cell note-blue">${y.yr===fixed?T('note_fixed'):''}</td></tr>`).join('')}</tbody></table>`;
+  }else{
+    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:60px">${T('th_month')}</th><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe(r.interest)}</td><td>${fe(r.principal)}</td><td>${fe(r.bal)}</td></tr>`).join('')}</tbody></table>`;
+  }
+}
+
+function mSetView(v,btn){
+  mAmortView=v;
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(t=>{t.className='tab-btn';});
+  btn.classList.add('active-blue');
+  const loan=Math.max(0,MV.price-MV.down+(document.getElementById('m-incl').checked?(MV.price*(MV.tax+MV.notary+MV.agent)/100):0));
+  mRenderAmort(mAmortRows(loan,MV.rate,MV.repay,MV.extra,MV.estart),MV.fixed);
+}
+
+
+/* ════════════════════════════════════
+   PERSONAL LOAN STATE & CONFIG
+════════════════════════════════════ */
+const PC={
+  amt:{min:500,max:100000,step:500,dec:0},
+  dur:{min:1,max:30,step:1,dec:0},
+  rate:{min:0.1,max:20,step:0.01,dec:2}
+};
+let PV={amt:10000,dur:5,rate:6.9};
+let pAmortView='annual', pChartInst=null, pSelPurposeVal='';
+const P_LOAN_INFO={
+  personal:'Personal loan (Ratenkredit): typical rate 5–12% p.a. depending on creditworthiness (Bonität / Schufa score). Representative example at 6.9% p.a.',
+  car:'Car loan (Autokredit): typically 2.9–7.9% p.a. Secured against vehicle; comprehensive insurance usually required.',
+  renovation:'Home renovation: 4–8% p.a. KfW subsidy programmes (e.g. KfW 151/152) may offer below-market rates for energy-efficiency works.'
+};
+
+function pDV(k,v){return PC[k].dec===0?String(Math.round(v)):v.toFixed(PC[k].dec);}
+function pSS(k,v){const e=document.getElementById('p-s-'+k);if(e){e.value=v;updateSliderFill(e);}}
+function pSI(k,v){const e=document.getElementById('p-i-'+k);if(e)e.value=pDV(k,v);}
+function pClamp(k,v){return Math.min(PC[k].max,Math.max(PC[k].min,v));}
+function pAV(k,v){v=pClamp(k,v);v=PC[k].dec===0?Math.round(v):parseFloat(v.toFixed(PC[k].dec));PV[k]=v;pSS(k,v);pSI(k,v);}
+function pFS(k){const e=document.getElementById('p-s-'+k);updateSliderFill(e);pAV(k,parseFloat(e.value));pCalc();}
+function pFI(k){pAV(k,parseNum(document.getElementById('p-i-'+k).value));pCalc();}
+function pFK(e,k){if(e.key==='Enter'||e.key==='Tab'){pFI(k);}else if(e.key==='ArrowUp'||e.key==='ArrowDown'){e.preventDefault();pAV(k,pClamp(k,PV[k]+PC[k].step*(e.key==='ArrowUp'?1:-1)));pCalc();}}
+
+function pSelType(card,type,rate){
+  document.querySelectorAll('.lt-card').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');
+  const infoKey=card.getAttribute('data-info-key')||('lt_'+type+'_info');
+  document.getElementById('p-rate-info').textContent=T(infoKey);
+  pAV('rate',rate);pCalc();
+}
+
+function pSelPurpose(card,nameKey){
+  if(pSelPurposeVal===nameKey){
+    pSelPurposeVal='';card.classList.remove('sel');
+    document.getElementById('p-purpose-badge').style.display='none';return;
+  }
+  document.querySelectorAll('.pc').forEach(c=>c.classList.remove('sel'));
+  card.classList.add('sel');pSelPurposeVal=nameKey;
+  const b=document.getElementById('p-purpose-badge');
+  b.textContent=T('purpose_label')+' '+T(nameKey);b.style.display='inline-block';
+}
+
+function pCalcMonthly(amt,rate,months){
+  const r=rate/100/12;
+  if(r<0.0000001)return amt/months;
+  return amt*r*Math.pow(1+r,months)/(Math.pow(1+r,months)-1);
+}
+
+function pBuildRows(amt,rate,months){
+  const r=rate/100/12,m=pCalcMonthly(amt,rate,months);
+  let bal=amt,rows=[];
+  for(let i=1;i<=months;i++){
+    if(bal<0.01)break;
+    const int=bal*r;
+    let prin=m-int;
+    if(prin>bal)prin=bal;
+    bal=Math.max(0,bal-prin);
+    rows.push({m:i,yr:Math.ceil(i/12),int,prin,bal});
+  }
+  return rows;
+}
+
+function pCalc(){
+  const{amt,dur,rate}=PV;
+  const months=dur*12;
+  const monthly=pCalcMonthly(amt,rate,months);
+  const totalRep=monthly*months;
+  const totalInt=totalRep-amt;
+  const ratio=totalRep>0?totalInt/totalRep*100:0;
+
+  document.getElementById('p-kpi').innerHTML=`
+    <div class="kpi-card accent-green"><div class="kpi-label">${T('kpi_p_monthly')}</div><div class="kpi-value">${fe2(monthly)}</div><div class="kpi-sub">${T('kpi_p_for')} ${months} ${T('kpi_p_months')}</div></div>
+    <div class="kpi-card accent-green"><div class="kpi-label">${T('kpi_p_rep')}</div><div class="kpi-value">${fe(totalRep)}</div><div class="kpi-sub">${fe(amt)} ${T('kpi_p_principal')}</div></div>
+    <div class="kpi-card accent-amber"><div class="kpi-label">${T('kpi_p_int')}</div><div class="kpi-value">${fe(totalInt)}</div><div class="kpi-sub">${ratio.toFixed(1)}${T('kpi_p_of_rep')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${T('kpi_p_cost')}</div><div class="kpi-value">${fe2(monthly/amt*1000)}/mo</div><div class="kpi-sub">${T('kpi_p_at')} ${rate.toFixed(2)}% p.a.</div></div>`;
+
+  document.getElementById('p-monthly-big').textContent=fe2(monthly);
+  const maxB=Math.max(amt,totalInt,1);
+  document.getElementById('p-repay-bars').innerHTML=[{l:T('bar_principal'),v:amt,c:'var(--green)'},{l:T('kpi_p_int'),v:totalInt,c:'#EF9F27'}].map(x=>{
+    const p=x.v/maxB*100;
+    return`<div class="bar-row"><span class="bar-lbl">${x.l}</span><div class="bar-bg"><div class="bar-fill" style="width:${p.toFixed(1)}%;background:${x.c}"></div></div><span class="bar-val">${fe(x.v)}</span></div>`;
+  }).join('');
+  document.getElementById('p-total-rep').textContent=fe(totalRep);
+  document.getElementById('p-int-ratio').style.color=ratio>30?'var(--amber)':'var(--green)';
+  document.getElementById('p-int-ratio').textContent=ratio.toFixed(1)+'%';
+  document.getElementById('p-cost-k').textContent=fe2(monthly/amt*1000)+'/mo';
+
+  pDrawChart(amt,rate,months);
+  pRenderCompare(amt,rate);
+  pRenderAmort(pBuildRows(amt,rate,months));
+}
+
+function pDrawChart(amt,rate,months){
+  const ctx=document.getElementById('p-chart').getContext('2d');
+  if(pChartInst){pChartInst.destroy();}
+  const rows=pBuildRows(amt,rate,months);
+  const labels=[],prin=[],intArr=[];
+  for(let yr=1;yr<=PV.dur;yr++){
+    const yRows=rows.filter(r=>r.yr===yr);
+    labels.push(T('cc_yr').replace('.','')+' '+yr);
+    prin.push(Math.round(yRows.reduce((s,r)=>s+r.prin,0)));
+    intArr.push(Math.round(yRows.reduce((s,r)=>s+r.int,0)));
+  }
+  pChartInst=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Principal',data:prin,backgroundColor:'#0F6E56',borderRadius:3,borderSkipped:false},
+      {label:'Interest',data:intArr,backgroundColor:'#EF9F27',borderRadius:3,borderSkipped:false}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€'+c.parsed.y.toLocaleString('de-DE')}}},
+      scales:{
+        x:{stacked:true,grid:{display:false},ticks:{color:'#999',font:{size:11}}},
+        y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#999',font:{size:11},callback:v=>'€'+v.toLocaleString('de-DE')}}
+      }
+    }
+  });
+}
+
+function pRenderCompare(amt,rate){
+  const durs=[1,2,3,5,7,10,15,20,30];
+  document.getElementById('p-compare').innerHTML=durs.map(d=>{
+    const m=pCalcMonthly(amt,rate,d*12);
+    const t=m*d*12,i=t-amt;
+    const cur=d===PV.dur;
+    return`<div class="cc ${cur?'cur-green':''}" onclick="pQuickDur(${d})">
+      <div class="cc-dur">${d} ${d>1?T('cc_yrs'):T('cc_yr')}</div>
+      <div class="cc-month">${fe2(m)}<span style="font-size:10px;font-weight:400;color:var(--gray-400)">/mo</span></div>
+      <div class="cc-int">${T('cc_int')} ${fe(i)}</div>
+    </div>`;
+  }).join('');
+}
+
+function pQuickDur(d){pAV('dur',d);pCalc();}
+
+function pRenderAmort(rows){
+  const w=document.getElementById('p-amort-wrap');
+  const ann={};rows.forEach(r=>{if(!ann[r.yr])ann[r.yr]={yr:r.yr,int:0,prin:0,bal:0,tp:0};ann[r.yr].int+=r.int;ann[r.yr].prin+=r.prin;ann[r.yr].bal=r.bal;ann[r.yr].tp+=r.int+r.prin;});
+  if(pAmortView==='annual'){
+    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${Object.values(ann).map(y=>`<tr class="${y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe2(y.int)}</td><td>${fe2(y.prin)}</td><td>${fe2(y.tp)}</td><td>${fe2(y.bal)}</td></tr>`).join('')}</tbody></table>`;
+  }else{
+    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:60px">${T('th_month')}</th><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe2(r.int)}</td><td>${fe2(r.prin)}</td><td>${fe2(r.bal)}</td></tr>`).join('')}</tbody></table>`;
+  }
+}
+
+function pSetView(v,btn){
+  pAmortView=v;
+  btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(t=>{t.className='tab-btn';});
+  btn.classList.add('active-green');
+  pRenderAmort(pBuildRows(PV.amt,PV.rate,PV.dur*12));
+}
+
+
+/* ════════════════════════════════════
+   PDF EXPORT
+════════════════════════════════════ */
+function buildMDonutSVG(){
+  const tot=mSegs.reduce((s,x)=>s+x.v,0);
+  if(tot===0)return'<svg width="160" height="160"><circle cx="80" cy="80" r="70" fill="#eee"/><circle cx="80" cy="80" r="44" fill="white"/></svg>';
+  let ang=-Math.PI/2,paths='';
+  mSegs.forEach(seg=>{
+    const sw=tot>0?seg.v/tot*Math.PI*2:0;if(sw<0.002)return;
+    if(Math.abs(sw-Math.PI*2)<0.001){paths+=`<circle cx="80" cy="80" r="70" fill="${seg.c}"/>`;ang+=sw;return;}
+    const x1=80+70*Math.cos(ang),y1=80+70*Math.sin(ang),nang=ang+sw;
+    const x2=80+70*Math.cos(nang),y2=80+70*Math.sin(nang),laf=sw>Math.PI?1:0;
+    paths+=`<path d="M80,80 L${x1.toFixed(2)},${y1.toFixed(2)} A70,70 0 ${laf},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${seg.c}"/>`;
+    ang+=sw;
+  });
+  return`<svg width="160" height="160" viewBox="0 0 160 160">${paths}<circle cx="80" cy="80" r="44" fill="white"/></svg>`;
+}
+
+function buildPDonutSVG(prinPct){
+  const ip=100-prinPct,r=70,cx=80,cy=80,inner=44;
+  if(prinPct>=99.9)return`<svg width="160" height="160" viewBox="0 0 160 160"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#0F6E56"/><circle cx="${cx}" cy="${cy}" r="${inner}" fill="white"/></svg>`;
+  if(prinPct<=0.1)return`<svg width="160" height="160" viewBox="0 0 160 160"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#EF9F27"/><circle cx="${cx}" cy="${cy}" r="${inner}" fill="white"/></svg>`;
+  const ang0=-Math.PI/2,ang1=ang0+prinPct/100*Math.PI*2;
+  const x1=cx+r*Math.cos(ang0),y1=cy+r*Math.sin(ang0),x2=cx+r*Math.cos(ang1),y2=cy+r*Math.sin(ang1);
+  const laf=prinPct>50?1:0;
+  return`<svg width="160" height="160" viewBox="0 0 160 160">
+    <path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${laf},1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="#0F6E56"/>
+    <path d="M${cx},${cy} L${x2.toFixed(2)},${y2.toFixed(2)} A${r},${r} 0 ${1-laf},1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="#EF9F27"/>
+    <circle cx="${cx}" cy="${cy}" r="${inner}" fill="white"/></svg>`;
+}
+
+const PDF_CSS=`
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111;font-size:13px}
+.page{max-width:1000px;margin:0 auto;padding:28px 36px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:3px solid VAR_ACCENT;margin-bottom:20px}
+.htl{font-size:24px;font-weight:700;color:VAR_ACCENT_DARK;margin-bottom:3px}
+.hsub{font-size:12px;color:#666}
+.hrt{text-align:right;font-size:11px;color:#999}
+.hrt strong{display:block;font-size:13px;color:VAR_ACCENT;margin-bottom:1px}
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kc{border-radius:9px;padding:13px 15px}
+.kc.g1{background:VAR_LIGHT;}.kc.g1 .kv{color:VAR_ACCENT_DARK}.kc.g1 .kl{color:VAR_ACCENT}
+.kc.ga{background:#FAEEDA}.kc.ga .kv{color:#633806}.kc.ga .kl{color:#854F0B}
+.kc.gn{background:#f5f5f5}
+.kl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;color:#888}
+.kv{font-size:20px;font-weight:700;line-height:1.2}
+.ks{font-size:11px;margin-top:3px;color:#999}
+.sec{border:1px solid #e5e5e5;border-radius:10px;padding:15px 17px;margin-bottom:13px;background:#fff}
+.stl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#aaa;margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:8px}
+.chip{background:VAR_LIGHT;color:VAR_ACCENT_DARK;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fll{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.flv{font-size:15px;font-weight:700;color:#111}
+.flv2{font-size:12px;color:#666;margin-top:1px}
+.mn{font-size:30px;font-weight:700;line-height:1;color:VAR_ACCENT_DARK}
+.ms{font-size:12px;color:#999;margin:3px 0 13px}
+.div{height:1px;background:#f0f0f0;margin:11px 0}
+.br{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bl{min-width:120px;font-size:12px;color:#666;flex-shrink:0}
+.bb{flex:1;height:8px;border-radius:4px;background:#eee}
+.bf{height:100%;border-radius:4px}
+.bv{min-width:90px;text-align:right;font-size:12px;font-weight:700;flex-shrink:0}
+.lg-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.lg-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{background:#f8f9fa}
+th{text-align:left;padding:8px 10px;border-bottom:2px solid #e0e0e0;color:#999;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:6px 10px;border-bottom:1px solid #f0f0f0;color:#333}
+tr:nth-child(even) td{background:#fafafa}
+tr.b5 td{border-bottom:2px solid #ddd;font-weight:700}
+.nt{font-size:10px;font-weight:700;color:VAR_ACCENT}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px}
+.cc{border-radius:8px;padding:10px 12px;background:#f5f5f5}
+.cc.cur{background:VAR_LIGHT;border:2px solid VAR_ACCENT}
+.cc-d{font-size:10px;font-weight:700;color:#999;text-transform:uppercase;margin-bottom:3px}
+.cc.cur .cc-d{color:VAR_ACCENT_DARK}
+.cc-m{font-size:14px;font-weight:700;color:#111}
+.cc.cur .cc-m{color:VAR_ACCENT}
+.cc-i{font-size:11px;color:#aaa;margin-top:2px}
+.foot{text-align:center;margin-top:18px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#ccc}
+@media print{
+  @page{margin:10mm 8mm;size:A4 landscape}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sec,.kc,.cc{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sec{break-inside:avoid}
+}`;
+
+function pbar(lbl,val,tot,col){
+  const p=tot>0?val/tot*100:0;
+  return`<div class="br"><span class="bl">${lbl}</span><div class="bb"><div class="bf" style="width:${p.toFixed(1)}%;background:${col}"></div></div><span class="bv">${fe(val)}</span></div>`;
+}
+
+function savePDF(){
+  const activePage=document.getElementById('page-mortgage').classList.contains('active')?'mortgage':'personal';
+  if(activePage==='mortgage') saveMortgagePDF();
+  else savePersonalPDF();
+}
+
+function saveMortgagePDF(){
+  const{price,down,downpct,rate,repay,fixed,tax,notary,agent,extra,estart}=MV;
+  const tA=price*tax/100,nA=price*notary/100,aA=price*agent/100,costs=tA+nA+aA;
+  const incl=document.getElementById('m-incl').checked;
+  const loan=Math.max(0,price-down+(incl?costs:0));
+  const mr=loan*(rate+repay)/100/12,mi=loan*rate/100/12,mp=mr-mi;
+  const rows=mAmortRows(loan,rate,repay,extra,estart);
+  const rowsB=mAmortRows(loan,rate,repay,0,1);
+  const totI=rows.reduce((s,r)=>s+r.interest,0);
+  const baseI=rowsB.reduce((s,r)=>s+r.interest,0);
+  const saved=extra>0?Math.max(0,baseI-totI):0;
+  const lastR=rows[rows.length-1],freeYr=lastR?Math.ceil(lastR.m/12):0;
+  const sn=document.getElementById('m-state-sel').value.split('|')[0]||'—';
+  const tot2=mSegs.reduce((s,x)=>s+x.v,0);
+  const mIP=mr>0?mi/mr*100:0,mPP=mr>0?mp/mr*100:0;
+  const ann=Object.values(mAnn);
+  const donut=buildMDonutSVG();
+
+  const css=PDF_CSS.replace(/VAR_ACCENT_DARK/g,'#0C447C').replace(/VAR_ACCENT/g,'#185FA5').replace(/VAR_LIGHT/g,'#E6F1FB');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Mortgage Report — ${sn}</title><style>${css}</style></head><body>
+<div class="page">
+  <div class="hdr">
+    <div><div class="htl">Mortgage Report</div><div class="hsub">Federal state: <strong style="color:#111">${sn}</strong> &nbsp;·&nbsp; Generated ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
+    <div class="hrt"><strong>German Mortgage Calculator</strong>your-german-mortgage.de</div>
+  </div>
+  <div class="krow">
+    <div class="kc g1"><div class="kl">Loan amount</div><div class="kv">${fe(loan)}</div><div class="ks">${price>0?(loan/price*100).toFixed(1)+'% LTV':''}</div></div>
+    <div class="kc g1"><div class="kl">Monthly payment</div><div class="kv">${fe(mr)}</div><div class="ks">per month</div></div>
+    <div class="kc gn"><div class="kl">Total purchase cost</div><div class="kv">${fe(price+costs)}</div><div class="ks">incl. ${fe(costs)} fees</div></div>
+    <div class="kc ga"><div class="kl">Total interest paid</div><div class="kv">${fe(totI)}</div><div class="ks">over full term</div></div>
+  </div>
+  <div class="r2">
+    <div class="sec"><div class="stl">Property details</div><div class="r3">
+      <div><div class="fll">Property price</div><div class="flv">${fe(price)}</div></div>
+      <div><div class="fll">Down payment</div><div class="flv">${fe(down)}</div></div>
+      <div><div class="fll">Down payment %</div><div class="flv">${downpct.toFixed(1)}%</div></div>
+    </div></div>
+    <div class="sec"><div class="stl">Loan settings</div><div class="r3">
+      <div><div class="fll">Interest rate</div><div class="flv">${rate.toFixed(2)}%</div></div>
+      <div><div class="fll">Tilgung rate</div><div class="flv">${repay.toFixed(2)}%</div></div>
+      <div><div class="fll">Fixed period</div><div class="flv">${fixed} yrs</div></div>
+    </div></div>
+  </div>
+  <div class="sec"><div class="stl">Purchase costs — ${sn} <span class="chip">${tax.toFixed(1)}% transfer tax</span></div><div class="r3">
+    <div><div class="fll">Transfer tax</div><div class="flv">${tax.toFixed(2)}%</div><div class="flv2">${fe(tA)}</div></div>
+    <div><div class="fll">Notary + land registry</div><div class="flv">${notary.toFixed(2)}%</div><div class="flv2">${fe(nA)}</div></div>
+    <div><div class="fll">Agent commission</div><div class="flv">${agent.toFixed(2)}%</div><div class="flv2">${fe(aA)}</div></div>
+  </div></div>
+  <div class="r2">
+    <div class="sec"><div class="stl">Cost breakdown</div>
+      <div style="display:flex;gap:18px;align-items:center">
+        <div style="flex-shrink:0">${donut}</div>
+        <div style="flex:1">${mSegs.map(x=>`<div class="lg-row"><div class="lg-dot" style="background:${x.c}"></div><span style="flex:1;color:#555">${x.l}${x.rate!==null?' <span style=\'color:#aaa;font-size:10px\'>@ '+x.rate.toFixed(2)+'%</span>':''}${x.pct!==null?' <span style=\'color:#aaa;font-size:10px\'>('+x.pct.toFixed(1)+'% '+T('leg_of_price')+')</span>':''}</span><span style="font-weight:700;min-width:75px;text-align:right">${fe(x.v)}</span></div>`).join('')}</div>
+      </div>
+    </div>
+    <div class="sec"><div class="stl">Monthly payment breakdown</div>
+      <div class="mn">${fe(mr)}</div><div class="ms">per month</div>
+      ${pbar('Interest',mi,mr,'#D85A30')}
+      ${pbar('Principal',mp,mr,'#185FA5')}
+      <div class="div"></div>
+      <div class="r3">
+        <div><div class="fll">Loan-free after</div><div class="flv">${freeYr} yrs</div></div>
+        <div><div class="fll">Interest saved</div><div class="flv" style="${extra>0?'color:#0F6E56':''}">${fe(saved)}</div></div>
+        <div><div class="fll">Total interest</div><div class="flv">${fe(totI)}</div></div>
+      </div>
+      ${extra>0?`<div class="div"></div><div style="font-size:12px;color:#666">Extra repayment: <strong>${fe(extra)}/yr</strong> from year ${estart}</div>`:''}
+    </div>
+  </div>
+  <div class="sec"><div class="stl">Amortization schedule — annual summary</div>
+    <table><thead><tr><th style="width:50px">Year</th><th>Interest</th><th>Principal</th><th>Total paid</th><th>Balance</th><th style="width:130px">Note</th></tr></thead>
+    <tbody>${ann.map(y=>`<tr class="${y.yr%5===0?'b5':''}"><td>${y.yr}</td><td>${fe(y.int)}</td><td>${fe(y.prin)}</td><td>${fe(y.tp)}</td><td>${fe(y.bal)}</td><td class="nt">${y.yr===fixed?T('note_fixed'):''}</td></tr>`).join('')}</tbody></table>
+  </div>
+  <div class="foot">This report is for informational purposes only and does not constitute financial advice. Always consult a qualified mortgage advisor before making financial decisions.</div>
+</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+  w.document.close();
+}
+
+function savePersonalPDF(){
+  const{amt,dur,rate}=PV;
+  const months=dur*12,monthly=pCalcMonthly(amt,rate,months);
+  const totalRep=monthly*months,totalInt=totalRep-amt,ratio=totalRep>0?totalInt/totalRep*100:0;
+  const rows=pBuildRows(amt,rate,months);
+  const ann={};rows.forEach(r=>{if(!ann[r.yr])ann[r.yr]={yr:r.yr,int:0,prin:0,bal:0,tp:0};ann[r.yr].int+=r.int;ann[r.yr].prin+=r.prin;ann[r.yr].bal=r.bal;ann[r.yr].tp+=r.int+r.prin;});
+  const prinPct=totalRep>0?amt/totalRep*100:100;
+  const donut=buildPDonutSVG(prinPct);
+  const selectedType=document.querySelector('.lt-card.sel .lt-name')?.textContent||'Personal loan';
+  const durs=[1,2,3,5,7,10,15,20,30];
+
+  const css=PDF_CSS.replace(/VAR_ACCENT_DARK/g,'#085041').replace(/VAR_ACCENT/g,'#0F6E56').replace(/VAR_LIGHT/g,'#EAF3DE');
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Personal Loan Report</title><style>${css}</style></head><body>
+<div class="page">
+  <div class="hdr">
+    <div><div class="htl">Personal Loan Report</div>
+    <div class="hsub">Loan type: <strong style="color:#111">${selectedType}</strong>${pSelPurposeVal?' &nbsp;·&nbsp; Purpose: <strong style="color:#111">'+pSelPurposeVal+'</strong>':''} &nbsp;·&nbsp; Generated ${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
+    <div class="hrt"><strong>German Personal Loan Calculator</strong></div>
+  </div>
+  <div class="krow">
+    <div class="kc g1"><div class="kl">Monthly payment</div><div class="kv">${fe2(monthly)}</div><div class="ks">for ${months} months</div></div>
+    <div class="kc g1"><div class="kl">Total repayment</div><div class="kv">${fe(totalRep)}</div><div class="ks">${fe(amt)} principal</div></div>
+    <div class="kc ga"><div class="kl">Total interest</div><div class="kv">${fe(totalInt)}</div><div class="ks">${ratio.toFixed(1)}% of repayment</div></div>
+    <div class="kc gn"><div class="kl">Cost per €1,000</div><div class="kv">${fe2(monthly/amt*1000)}/mo</div><div class="ks">at ${rate.toFixed(2)}% p.a.</div></div>
+  </div>
+  <div class="r2">
+    <div class="sec"><div class="stl">Loan parameters</div><div class="r3">
+      <div><div class="fll">Loan amount</div><div class="flv">${fe(amt)}</div></div>
+      <div><div class="fll">Duration</div><div class="flv">${dur} yr${dur>1?'s':''} (${months} mo)</div></div>
+      <div><div class="fll">Interest rate</div><div class="flv">${rate.toFixed(2)}% p.a.</div></div>
+    </div></div>
+    <div class="sec"><div class="stl">Repayment summary</div>
+      <div class="mn">${fe2(monthly)}</div><div class="ms">per month</div>
+      ${pbar('Principal',amt,totalRep,'#0F6E56')}
+      ${pbar('Total interest',totalInt,totalRep,'#EF9F27')}
+      <div class="div"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:4px"><span style="color:#666">Interest cost ratio</span><span style="font-weight:700;color:${ratio>30?'#854F0B':'#0F6E56'}">${ratio.toFixed(1)}%</span></div>
+    </div>
+  </div>
+  <div class="sec"><div class="stl">Cost breakdown — principal vs interest</div>
+    <div style="display:flex;gap:22px;align-items:center">
+      <div style="flex-shrink:0">${donut}</div>
+      <div style="flex:1">
+        <div class="lg-row"><div class="lg-dot" style="background:#0F6E56"></div><span style="flex:1;color:#555">Principal repaid</span><span style="font-weight:700;min-width:45px;text-align:right">${prinPct.toFixed(1)}%</span><span style="color:#999;margin-left:10px;font-size:11px">${fe(amt)}</span></div>
+        <div class="lg-row"><div class="lg-dot" style="background:#EF9F27"></div><span style="flex:1;color:#555">Total interest cost</span><span style="font-weight:700;min-width:45px;text-align:right">${(100-prinPct).toFixed(1)}%</span><span style="color:#999;margin-left:10px;font-size:11px">${fe(totalInt)}</span></div>
+        <div style="margin-top:12px;padding:10px 12px;background:#EAF3DE;border-radius:8px;font-size:12px;color:#3B6D11;line-height:1.5">Increasing your monthly payment or shortening the duration can significantly reduce interest paid.</div>
+      </div>
+    </div>
+  </div>
+  <div class="sec"><div class="stl">Compare durations <span class="chip">current: ${dur} yr${dur>1?'s':''}</span></div>
+    <div class="cg">${durs.map(d=>{const m=pCalcMonthly(amt,rate,d*12);const t=m*d*12;return`<div class="cc ${d===dur?'cur':''}"><div class="cc-d">${d} yr${d>1?'s':''}</div><div class="cc-m">${fe2(m)}/mo</div><div class="cc-i">Int: ${fe(t-amt)}</div></div>`;}).join('')}</div>
+  </div>
+  <div class="sec"><div class="stl">Amortization schedule — annual</div>
+    <table><thead><tr><th>Year</th><th>Interest</th><th>Principal</th><th>Total paid</th><th>Balance</th></tr></thead>
+    <tbody>${Object.values(ann).map(y=>`<tr class="${y.yr%5===0?'b5':''}"><td>${y.yr}</td><td>${fe2(y.int)}</td><td>${fe2(y.prin)}</td><td>${fe2(y.tp)}</td><td>${fe2(y.bal)}</td></tr>`).join('')}</tbody></table>
+  </div>
+  <div class="foot">This report is for informational purposes only and does not constitute financial advice. Actual rate depends on your creditworthiness (Bonität/Schufa score). Always compare offers from multiple lenders.</div>
+</div>
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+  w.document.close();
+}
+
+/* ════════════════════════════════════
+   SAVE / LOAD STATE  (embedded in file)
+════════════════════════════════════ */
+
+function collectState(){
+  return {
+    mv:{...MV},
+    pv:{...PV},
+    mState:document.getElementById('m-state-sel').value,
+    mIncl:document.getElementById('m-incl').checked,
+    mAmortView,
+    pAmortView,
+    pLoanType:document.querySelector('.lt-card.sel .lt-name')?.textContent||'',
+    pPurpose:pSelPurposeVal,
+    activePage:document.getElementById('page-mortgage').classList.contains('active')?'mortgage':'personal'
+  };
+}
+
+function applyState(s){
+  if(!s||typeof s!=='object')return false;
+  if(s.mv)Object.keys(s.mv).forEach(k=>{if(MC[k]!==undefined)MV[k]=s.mv[k];});
+  if(s.pv)Object.keys(s.pv).forEach(k=>{if(PC[k]!==undefined)PV[k]=s.pv[k];});
+  if(s.mState){
+    document.getElementById('m-state-sel').value=s.mState;
+    const[n,t]=s.mState.split('|');
+    if(n&&t)document.getElementById('m-state-badge').textContent=n+' — Transfer tax: '+parseFloat(t).toFixed(1)+'%';
+  }
+  if(s.mIncl!==undefined){
+    const chk=document.getElementById('m-incl');
+    chk.checked=s.mIncl;
+    const track=chk.nextElementSibling,thumb=track?.nextElementSibling;
+    if(track&&thumb){track.style.background=s.mIncl?'var(--blue)':'#ddd';thumb.style.transform=s.mIncl?'translateX(18px)':'translateX(0)';}
+  }
+  if(s.mAmortView)mAmortView=s.mAmortView;
+  if(s.pAmortView)pAmortView=s.pAmortView;
+  if(s.pLoanType){
+    document.querySelectorAll('.lt-card').forEach(c=>{
+      c.classList.toggle('sel',c.querySelector('.lt-name')?.textContent===s.pLoanType);
+    });
+  }
+  if(s.pPurpose){
+    pSelPurposeVal=s.pPurpose;
+    document.querySelectorAll('.pc').forEach(c=>{c.classList.toggle('sel',c.querySelector('.pc-name')?.textContent===s.pPurpose);});
+    const b=document.getElementById('p-purpose-badge');
+    if(b&&s.pPurpose){b.textContent='Purpose: '+s.pPurpose;b.style.display='inline-block';}
+  }
+  if(s.activePage)switchPage(s.activePage);
+  return true;
+}
+
+function syncInputsFromState(){
+  Object.keys(MC).forEach(k=>{
+    const s=document.getElementById('m-s-'+k),i=document.getElementById('m-i-'+k);
+    if(s){s.value=MV[k];updateSliderFill(s);}
+    if(i)i.value=MC[k].dec===0?String(Math.round(MV[k])):MV[k].toFixed(MC[k].dec);
+  });
+  Object.keys(PC).forEach(k=>{
+    const s=document.getElementById('p-s-'+k),i=document.getElementById('p-i-'+k);
+    if(s){s.value=PV[k];updateSliderFill(s);}
+    if(i)i.value=PC[k].dec===0?String(Math.round(PV[k])):PV[k].toFixed(PC[k].dec);
+  });
+}
+
+/* ── Save to file: rewrites this HTML with state embedded then downloads it ── */
+function saveToFile(){
+  const state=collectState();
+  const stateJSON=JSON.stringify(state,null,2);
+
+  /* Inject state into the live DOM tag so outerHTML captures it */
+  const tag=document.getElementById('saved-state');
+  if(tag) tag.textContent=stateJSON;
+
+  /* Serialize the entire live DOM — no XHR, works from any origin */
+  const src='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+
+  /* Build descriptive filename: page + interest rate + timestamp */
+  const isMortPage=document.getElementById('page-mortgage').classList.contains('active');
+  const activeRate=isMortPage?MV.rate:PV.rate;
+  const rateStr=activeRate.toFixed(2).replace('.','p');
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const ts=now.getFullYear()+''+pad(now.getMonth()+1)+''+pad(now.getDate())+'_'+pad(now.getHours())+''+pad(now.getMinutes());
+  const prefix=isMortPage?'mortgage':'personal_loan';
+  const filename=prefix+'_rate'+rateStr+'pct_'+ts+'.html';
+
+  const blob=new Blob([src],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},600);
+
+  const btn=document.getElementById('save-btn');
+  if(btn){const o=btn.textContent;btn.textContent='Saved!';btn.style.background='#27500A';setTimeout(()=>{btn.textContent=o;btn.style.background='#0F6E56';},2500);}
+  showToast('Saved as: '+filename+' — open it any time to restore your inputs.');
+}
+
+function loadEmbeddedState(){
+  try{
+    const tag=document.getElementById('saved-state');
+    if(!tag)return false;
+    const raw=tag.textContent.trim();
+    if(!raw||raw==='{}')return false;
+    const s=JSON.parse(raw);
+    if(!s||!s.mv)return false;
+    return applyState(s);
+  }catch(e){return false;}
+}
+
+function clearState(){
+  /* Reset state tag to empty and reload */
+  try{
+    const tag=document.getElementById('saved-state');
+    if(tag)tag.textContent='{}';
+  }catch(e){}
+  /* Also clear any legacy localStorage */
+  try{localStorage.removeItem('de_loan_calc_v1');}catch(e){}
+  location.reload();
+}
+
+function showToast(msg,isError){
+  const toast=document.getElementById('restore-toast');
+  if(!toast)return;
+  toast.textContent=msg;
+  toast.style.background=isError?'#8B1A1A':'#27500A';
+  toast.style.display='block';
+  requestAnimationFrame(()=>{toast.style.opacity='1';});
+  setTimeout(()=>{toast.style.opacity='0';setTimeout(()=>{toast.style.display='none';toast.textContent='';},400);},3000);
+}
+
+/* ════════════════════════════════════
+   INIT — load embedded state then render
+════════════════════════════════════ */
+
+/* ════════════════════════════════════
+   LANGUAGE / i18n
+════════════════════════════════════ */
+let LANG='en';
+
+const TR={
+  en:{
+    // Nav
+    brand_pre:'German ',brand_span:'Loan',brand_post:' Calculator',
+    tab_mort:'Mortgage Calculator',tab_loan:'Personal Loan Calculator',
+    btn_pdf:'Save as PDF',
+    // Mortgage sections & labels
+    sec_property:'Property details',sec_loan_settings:'Loan settings',
+    sec_purchase:'Purchase costs',sec_breakdown:'Cost breakdown',
+    sec_monthly:'Monthly payment',sec_extra:'Extra repayments (Sondertilgung)',
+    sec_amort:'Amortization schedule',
+    fl_price:'Property price',fl_down:'Down payment',fl_down_pct:'Down payment percentage',
+    fl_rate:'Interest rate',fl_tilgung:'Repayment rate — Tilgung',fl_fixed:'Fixed interest period',
+    fl_state:'Federal state — auto-sets transfer tax',
+    fl_tax:'Transfer tax (Grunderwerbsteuer)',fl_notary:'Notary + land registry',fl_agent:'Agent commission',
+    fl_extra:'Annual extra payment',fl_estart:'Start from year',
+    info_costs:'Transfer tax (Grunderwerbsteuer) varies 3.5–6.5% by state. Notary + land registry ~1.5–2%. Agent commission typically 3.57% (shared) or negotiated. Include purchase costs in loan via toggle below.',
+    incl_costs:'Include purchase costs in loan',
+    col_collapse:'Collapse',col_expand:'Expand',
+    // KPI dynamic
+    kpi_loan:'Loan amount',kpi_ltv:'% LTV',kpi_monthly:'Monthly payment',kpi_per_month:'per month',
+    kpi_purchase:'Total purchase cost',kpi_incl:'incl.',kpi_fees:'fees',
+    kpi_interest:'Total interest paid',kpi_full_term:'over full term',
+    // Legend
+    leg_loan:'Loan',leg_down:'Down payment',leg_tax:'Transfer tax',leg_notary:'Notary fees',leg_agent:'Agent fees',
+    leg_of_price:'of price',
+    // Monthly bars
+    bar_interest:'Interest',bar_principal:'Principal',
+    // Extra KPIs
+    kpi_free:'Loan-free after',kpi_yrs:'yrs',kpi_saved:'Interest saved',kpi_tot_int:'Total interest',
+    // Amort
+    tab_annual:'Annual summary',tab_monthly:'Monthly detail',
+    th_year:'Year',th_month:'Month',th_interest:'Interest',th_principal:'Principal',
+    th_total:'Total paid',th_balance:'Balance',th_note:'Note',
+    note_fixed:'Fixed rate ends',
+    // Hints
+    hint_of:'of',hint_eq:'=',
+    // State badge
+    state_tax:'Transfer tax:',
+    // Personal sections
+    sec_type:'Loan type',sec_purpose:'Loan purpose',sec_params:'Loan parameters',
+    sec_overview:'Repayment overview',sec_chart:'Principal vs interest by year',sec_compare:'Compare durations',
+    // Personal loan types
+    lt_personal:'Personal loan (Ratenkredit)',lt_car:'Car loan (Autokredit)',lt_reno:'Home renovation',
+    lt_personal_desc:'No collateral needed. Fixed monthly rate. Most common consumer loan in Germany.',
+    lt_car_desc:'Secured against the vehicle. Lower rate. Comprehensive insurance usually required.',
+    lt_reno_desc:'KfW-backed renovation loans available with subsidised rates for energy-efficiency works.',
+    lt_personal_info:'Personal loan (Ratenkredit): typical rate 5–12% p.a. depending on creditworthiness (Bonität / Schufa score). Representative example at 6.9% p.a.',
+    lt_car_info:'Car loan (Autokredit): typically 2.9–7.9% p.a. Secured against vehicle; comprehensive insurance usually required.',
+    lt_reno_info:'Home renovation: 4–8% p.a. KfW subsidy programmes (e.g. KfW 151/152) may offer below-market rates for energy-efficiency works.',
+    // Purpose cards
+    pc_debt:'Debt consolidation',pc_car:'Car purchase',pc_reno:'Home renovation',
+    pc_elec:'Electronics',pc_travel:'Travel',pc_wedding:'Wedding',pc_edu:'Education',pc_other:'Other',
+    purpose_label:'Purpose:',optional:'Optional — for your records',
+    // Personal fields
+    fl_amt:'Loan amount',fl_dur:'Duration',fl_rate_pa:'Interest rate (p.a.)',
+    // Personal KPI
+    kpi_p_monthly:'Monthly payment',kpi_p_for:'for',kpi_p_months:'months',
+    kpi_p_rep:'Total repayment',kpi_p_principal:'principal',
+    kpi_p_int:'Total interest',kpi_p_of_rep:'% of repayment',
+    kpi_p_cost:'Cost per €1,000',kpi_p_at:'at',
+    // Personal body labels
+    p_total_rep:'Total repayment',p_int_ratio:'Interest cost ratio',p_cost_k:'Cost per €1,000 borrowed',p_per_month:'per month',
+    // Chart labels
+    chart_principal:'Principal',chart_interest:'Interest',
+    // Compare grid
+    cc_int:'Int:',cc_yr:'yr',cc_yrs:'yrs',
+    // Amort personal
+    tab_ann:'Annual',tab_mo:'Monthly',
+  },
+  de:{
+    brand_pre:'Deutscher ',brand_span:'Kredit',brand_post:'rechner',
+    tab_mort:'Hypothekenrechner',tab_loan:'Privatkredit-Rechner',
+    btn_pdf:'Als PDF speichern',
+    sec_property:'Immobiliendetails',sec_loan_settings:'Darlehenseinstellungen',
+    sec_purchase:'Kaufnebenkosten',sec_breakdown:'Kostenaufschlüsselung',
+    sec_monthly:'Monatliche Rate',sec_extra:'Sondertilgung',
+    sec_amort:'Tilgungsplan',
+    fl_price:'Kaufpreis',fl_down:'Eigenkapital',fl_down_pct:'Eigenkapitalanteil',
+    fl_rate:'Zinssatz',fl_tilgung:'Tilgungsrate',fl_fixed:'Zinsbindungsdauer',
+    fl_state:'Bundesland — setzt Grunderwerbsteuer automatisch',
+    fl_tax:'Grunderwerbsteuer',fl_notary:'Notar + Grundbuch',fl_agent:'Maklerprovision',
+    fl_extra:'Jährliche Sondertilgung',fl_estart:'Ab Jahr',
+    info_costs:'Die Grunderwerbsteuer variiert je nach Bundesland zwischen 3,5–6,5 %. Notar + Grundbuch ca. 1,5–2 %. Maklerprovision typisch 3,57 % (geteilt) oder verhandelbar. Kaufnebenkosten optional ins Darlehen einschließen.',
+    incl_costs:'Kaufnebenkosten ins Darlehen einschließen',
+    col_collapse:'Einklappen',col_expand:'Ausklappen',
+    kpi_loan:'Darlehensbetrag',kpi_ltv:'% Beleihungsauslauf',kpi_monthly:'Monatliche Rate',kpi_per_month:'pro Monat',
+    kpi_purchase:'Gesamtkaufkosten',kpi_incl:'inkl.',kpi_fees:'Nebenkosten',
+    kpi_interest:'Gesamtzinsen',kpi_full_term:'über gesamte Laufzeit',
+    leg_loan:'Darlehen',leg_down:'Eigenkapital',leg_tax:'Grunderwerbsteuer',leg_notary:'Notarkosten',leg_agent:'Maklergebühren',
+    leg_of_price:'des Kaufpreises',
+    bar_interest:'Zinsen',bar_principal:'Tilgung',
+    kpi_free:'Schuldenfrei nach',kpi_yrs:'J.',kpi_saved:'Zinseinsparung',kpi_tot_int:'Gesamtzinsen',
+    tab_annual:'Jährliche Übersicht',tab_monthly:'Monatliche Details',
+    th_year:'Jahr',th_month:'Monat',th_interest:'Zinsen',th_principal:'Tilgung',
+    th_total:'Gesamt bezahlt',th_balance:'Restschuld',th_note:'Hinweis',
+    note_fixed:'Zinsbindung endet',
+    hint_of:'von',hint_eq:'=',
+    state_tax:'Grunderwerbsteuer:',
+    sec_type:'Kreditart',sec_purpose:'Verwendungszweck',sec_params:'Kreditparameter',
+    sec_overview:'Rückzahlungsübersicht',sec_chart:'Tilgung vs. Zinsen je Jahr',sec_compare:'Laufzeiten vergleichen',
+    lt_personal:'Privatkredit (Ratenkredit)',lt_car:'Autokredit',lt_reno:'Sanierungskredit',
+    lt_personal_desc:'Keine Sicherheit erforderlich. Feste Monatsrate. Häufigster Verbraucherkredit in Deutschland.',
+    lt_car_desc:'Fahrzeug als Sicherheit. Günstigerer Zinssatz. Vollkaskoversicherung meist Pflicht.',
+    lt_reno_desc:'KfW-geförderte Kredite mit vergünstigten Zinsen für energetische Sanierungen verfügbar.',
+    lt_personal_info:'Privatkredit (Ratenkredit): typischer Zinssatz 5–12 % p.a. je nach Bonität / Schufa-Score. Repräsentatives Beispiel bei 6,9 % p.a.',
+    lt_car_info:'Autokredit: typisch 2,9–7,9 % p.a. Fahrzeug dient als Sicherheit; Vollkaskoversicherung meist erforderlich.',
+    lt_reno_info:'Sanierungskredit: 4–8 % p.a. KfW-Förderprogramme (z. B. KfW 151/152) können vergünstigte Zinsen für energetische Sanierungen bieten.',
+    pc_debt:'Umschuldung',pc_car:'Autokauf',pc_reno:'Haussanierung',
+    pc_elec:'Elektronik',pc_travel:'Reise',pc_wedding:'Hochzeit',pc_edu:'Bildung',pc_other:'Sonstiges',
+    purpose_label:'Zweck:',optional:'Optional — für Ihre Unterlagen',
+    fl_amt:'Kreditbetrag',fl_dur:'Laufzeit',fl_rate_pa:'Zinssatz (p.a.)',
+    kpi_p_monthly:'Monatliche Rate',kpi_p_for:'für',kpi_p_months:'Monate',
+    kpi_p_rep:'Gesamtrückzahlung',kpi_p_principal:'Kreditbetrag',
+    kpi_p_int:'Gesamtzinsen',kpi_p_of_rep:'% der Rückzahlung',
+    kpi_p_cost:'Kosten pro 1.000 €',kpi_p_at:'bei',
+    p_total_rep:'Gesamtrückzahlung',p_int_ratio:'Zinskosten-Anteil',p_cost_k:'Kosten pro 1.000 € Kredit',p_per_month:'pro Monat',
+    chart_principal:'Tilgung',chart_interest:'Zinsen',
+    cc_int:'Zinsen:',cc_yr:'J.',cc_yrs:'J.',
+    tab_ann:'Jährlich',tab_mo:'Monatlich',
+  }
+};
+
+function T(k){return(TR[LANG]&&TR[LANG][k]!==undefined)?TR[LANG][k]:TR.en[k]||k;}
+
+function langToggle(e){
+  e.stopPropagation();
+  const dd=document.getElementById('lang-dd');
+  const isOpen=dd.classList.contains('open');
+  dd.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    setTimeout(()=>document.addEventListener('click',langClose,{once:true}),0);
+  }
+}
+function langClose(){document.getElementById('lang-dd').classList.remove('open');}
+
+function setLang(lang){
+  LANG=lang;
+  document.getElementById('lang-dd').classList.remove('open');
+  const isDE=lang==='de';
+  document.getElementById('lang-flag').textContent=isDE?'🇩🇪':'🇬🇧';
+  document.getElementById('lang-code').textContent=isDE?'DE':'EN';
+  document.getElementById('lopt-en').className='lang-opt'+(lang==='en'?' active':'');
+  document.getElementById('lopt-de').className='lang-opt'+(lang==='de'?' active':'');
+  applyLang();
+  mCalc();
+  pCalc();
+}
+
+function applyLang(){
+  const el=id=>document.getElementById(id);
+  const all=s=>document.querySelectorAll(s);
+
+  // Brand
+  const brand=document.querySelector('.brand');
+  if(brand)brand.innerHTML=T('brand_pre')+'<span>'+T('brand_span')+'</span>'+T('brand_post');
+
+  // Nav tabs
+  if(el('tab-mort'))el('tab-mort').textContent=T('tab_mort');
+  if(el('tab-loan'))el('tab-loan').textContent=T('tab_loan');
+
+  // PDF button — preserve class
+  const pdfBtn=el('pdf-btn');if(pdfBtn)pdfBtn.textContent=T('btn_pdf');
+
+  // Section titles (data-lang attr lookup by content — use data attrs)
+  all('[data-lk]').forEach(e=>{ e.textContent=T(e.getAttribute('data-lk')); });
+
+  // Collapse buttons
+  all('.collapse-btn').forEach(btn=>{
+    const body=btn.closest('.section-card')&&btn.closest('.section-card').querySelector('.card-body,.cb2');
+    btn.textContent=(body&&body.style.display==='none')?T('col_expand'):T('col_collapse');
+  });
+
+  // togCard also needs updating so future collapse uses right language
+  // (handled by overriding togCard below)
+
+  // State badge
+  const sel=el('m-state-sel');
+  const badge=el('m-state-badge');
+  if(sel&&sel.value&&badge){
+    const[n,tv]=sel.value.split('|');
+    badge.textContent=n+' — '+T('state_tax')+' '+parseFloat(tv).toFixed(1)+'%';
+  }
+
+  // Loan type names & descs
+  const ltNames=all('.lt-name[data-lk]');
+  ltNames.forEach(e=>e.textContent=T(e.getAttribute('data-lk')));
+  const ltDescs=all('.lt-desc[data-lk]');
+  ltDescs.forEach(e=>e.textContent=T(e.getAttribute('data-lk')));
+
+  // Active loan info box
+  const selCard=document.querySelector('.lt-card.sel');
+  if(selCard){
+    const infoKey=selCard.getAttribute('data-info-key');
+    if(infoKey&&el('p-rate-info'))el('p-rate-info').textContent=T(infoKey);
+  }
+
+  // Purpose card names
+  all('.pc-name[data-lk]').forEach(e=>e.textContent=T(e.getAttribute('data-lk')));
+
+  // Optional label
+  all('[data-lk-opt]').forEach(e=>e.textContent=T(e.getAttribute('data-lk-opt')));
+
+  // Purpose badge text (re-use stored name)
+  if(pSelPurposeVal){
+    const badge2=el('p-purpose-badge');
+    if(badge2)badge2.textContent=T('purpose_label')+' '+pSelPurposeVal;
+  }
+
+  // Static personal section labels
+  const pPerMonth=el('p-per-month-lbl');if(pPerMonth)pPerMonth.textContent=T('p_per_month');
+  const pTotRep=el('p-total-rep-lbl');if(pTotRep)pTotRep.textContent=T('p_total_rep');
+  const pIntRatio=el('p-int-ratio-lbl');if(pIntRatio)pIntRatio.textContent=T('p_int_ratio');
+  const pCostK=el('p-cost-k-lbl');if(pCostK)pCostK.textContent=T('p_cost_k');
+
+  // Tab buttons
+  all('[data-lk-tab]').forEach(e=>e.firstChild&&(e.firstChild.textContent!==undefined)&&(e.textContent=T(e.getAttribute('data-lk-tab'))||e.textContent));
+  all('[data-lk-tab]').forEach(e=>{ const k=e.getAttribute('data-lk-tab'); if(k)e.textContent=T(k); });
+
+  // Chart legend labels
+  all('[data-lk-chart]').forEach(e=>e.textContent=T(e.getAttribute('data-lk-chart')));
+
+  // Page title
+  document.title=LANG==='de'?'Deutscher Kreditrechner — Hypothek & Privatkredit':'German Loan Calculator — Mortgage & Personal';
+}
+
+// Override togCard to respect language
+function togCard(btn){
+  const body=btn.closest('.section-card').querySelector('.card-body');
+  if(!body)return;
+  const hidden=body.style.display==='none';
+  body.style.display=hidden?'':'none';
+  btn.textContent=hidden?T('col_collapse'):T('col_expand');
+}
+
+const hadSaved=loadEmbeddedState();
+syncInputsFromState();
+mCalc();
+pCalc();
+if(hadSaved)showToast('Your saved inputs have been restored.');
+</script>
+</body>
+</html>
