@@ -24,7 +24,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 
 /* ── TOP NAV ── */
 .top-nav{background:#fff;border-bottom:1px solid #e5e5e5;padding:0 32px;display:flex;align-items:center;gap:0;height:60px;position:sticky;top:0;z-index:100}
-.brand{font-size:16px;font-weight:700;color:var(--gray-800);margin-right:32px;white-space:nowrap}
+.brand{font-size:16px;font-weight:800;color:var(--gray-800);margin-right:28px;white-space:nowrap;display:flex;align-items:center;letter-spacing:-.01em}
+.brand-de{color:#222;font-weight:800}
+.brand-loan{color:#185FA5;font-weight:800;margin:0 3px}
+.brand-calc{color:#555;font-weight:600}
 .brand span{color:var(--blue)}
 .nav-tabs{display:flex;height:100%;gap:0}
 .nav-tab{height:100%;padding:0 20px;border:none;background:transparent;font-size:14px;font-weight:500;color:var(--gray-400);cursor:pointer;border-bottom:3px solid transparent;transition:.15s;white-space:nowrap}
@@ -32,12 +35,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .nav-tab.active-mort{color:var(--blue);border-bottom-color:var(--blue)}
 .nav-tab.active-loan{color:var(--green);border-bottom-color:var(--green)}
 .nav-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
-.btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff;color:#333;transition:.15s}
-.btn:hover{background:var(--gray-50)}
-.btn-blue{background:var(--blue);color:#fff;border-color:var(--blue)}
-.btn-blue:hover{background:var(--blue-dark);border-color:var(--blue-dark)}
-.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
-.btn-green:hover{background:var(--green-dark);border-color:var(--green-dark)}
+.btn{
+  padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;
+  cursor:pointer;border:1.5px solid #ddd;background:#f8f9fa;color:#333 !important;
+  transition:background .15s,border-color .15s;
+  display:inline-flex;align-items:center;white-space:nowrap;
+  -webkit-appearance:none;appearance:none;min-height:36px;
+}
+.btn:hover{background:#e8e8e8;border-color:#bbb}
+.btn:active{opacity:.85}
+/* Reset — solid red, unmistakable */
+.btn-reset{background:#c0392b !important;color:#ffffff !important;border-color:#c0392b !important;box-shadow:0 2px 6px rgba(192,57,43,.30)}
+.btn-reset:hover{background:#a93226 !important;border-color:#a93226 !important;box-shadow:0 2px 8px rgba(192,57,43,.40)}
+/* Save to file — green solid */
+.btn-save{background:#0F6E56 !important;color:#ffffff !important;border-color:#0F6E56 !important;box-shadow:0 2px 6px rgba(15,110,86,.25)}
+.btn-save:hover{background:#085041 !important;border-color:#085041 !important}
+/* Print — neutral outline */
+.btn-outline-gray{background:#f8f9fa !important;color:#444 !important;border-color:#bbb !important}
+.btn-outline-gray:hover{background:#eee !important;border-color:#888 !important;color:#222 !important}
+/* Save as PDF — blue solid */
+.btn-blue{background:#185FA5 !important;color:#ffffff !important;border-color:#185FA5 !important;box-shadow:0 2px 6px rgba(24,95,165,.25)}
+.btn-blue:hover{background:#0C447C !important;border-color:#0C447C !important}
+.btn-green{background:#0F6E56 !important;color:#ffffff !important;border-color:#0F6E56 !important}
+.btn-green:hover{background:#085041 !important;border-color:#085041 !important}
 
 /* ── PAGES ── */
 .page{display:none;padding:28px 32px;max-width:1080px;margin:0 auto}
@@ -63,13 +83,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 
 /* ── SECTION CARDS ── */
 .section-card{background:#fff;border-radius:var(--radius-lg);border:var(--border);padding:20px 22px;margin-bottom:16px}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100)}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--gray-100);gap:8px}
+.section-header>div:first-child{flex:1}
 .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray-400)}
 .section-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-left:8px}
 .badge-blue{background:var(--blue-light);color:var(--blue-dark)}
 .badge-green{background:var(--green-light);color:var(--green-dark)}
-.collapse-btn{font-size:12px;padding:4px 12px;border:1px solid #e0e0e0;border-radius:6px;background:#fff;color:var(--gray-400);cursor:pointer}
-.collapse-btn:hover{background:var(--gray-50);color:var(--gray-800)}
+.collapse-btn{font-size:12px;padding:4px 14px;border:1.5px solid #ddd;border-radius:6px;background:#f8f9fa;color:#555;cursor:pointer;font-weight:500;transition:all .15s}
+.collapse-btn:hover{background:#eee;border-color:#bbb;color:#222}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
 .grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -103,19 +124,40 @@ input[type=range].green-range::-moz-range-thumb{border-color:var(--green)}
 .divider{height:1px;background:var(--gray-100);margin:14px 0}
 
 /* ── TABS ── */
-.tab-bar{display:flex;gap:6px;margin-bottom:14px}
-.tab-btn{padding:5px 18px;border:1px solid #ddd;border-radius:7px;font-size:13px;cursor:pointer;background:#fff;color:var(--gray-400);transition:.15s}
-.tab-btn:hover{background:var(--gray-50)}
-.tab-btn.active-blue{background:var(--blue);color:#fff;border-color:var(--blue);font-weight:600}
-.tab-btn.active-green{background:var(--green);color:#fff;border-color:var(--green);font-weight:600}
+.tab-bar{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{
+  padding:9px 22px;border:2px solid #d0d0d0;border-radius:8px;font-size:13px;
+  font-weight:700;cursor:pointer;background:#f0f0f0;color:#444 !important;
+  transition:background .15s,border-color .15s,color .15s;
+  -webkit-appearance:none;appearance:none;
+  letter-spacing:.01em;min-height:40px;
+}
+.tab-btn:hover{background:#e0e0e0;border-color:#aaa;color:#111 !important}
+.tab-btn.active-blue{
+  background:#185FA5 !important;color:#ffffff !important;
+  border-color:#185FA5 !important;
+  box-shadow:0 2px 8px rgba(24,95,165,.35);
+}
+.tab-btn.active-blue:hover{background:#0C447C !important;border-color:#0C447C !important}
+.tab-btn.active-green{
+  background:#0F6E56 !important;color:#ffffff !important;
+  border-color:#0F6E56 !important;
+  box-shadow:0 2px 8px rgba(15,110,86,.35);
+}
+.tab-btn.active-green:hover{background:#085041 !important;border-color:#085041 !important}
 
 /* ── TABLE ── */
-.data-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
-.data-table th{text-align:left;padding:9px 11px;border-bottom:2px solid var(--gray-200);color:var(--gray-400);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.05em;background:var(--gray-50)}
-.data-table td{padding:8px 11px;border-bottom:1px solid var(--gray-100);color:#333}
+.data-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
+.data-table th{text-align:right;padding:9px 10px;border-bottom:2px solid var(--gray-200);color:var(--gray-400);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.04em;background:var(--gray-50);white-space:nowrap}
+.data-table th:first-child{text-align:left}
+.data-table td{padding:8px 10px;border-bottom:1px solid var(--gray-100);color:#333;text-align:right;white-space:nowrap}
+.data-table td:first-child{text-align:left}
 .data-table tr:hover td{background:#fafafa}
-.data-table tr.bold5 td{border-bottom:2px solid var(--gray-200);font-weight:700}
-.note-cell{font-size:11px;font-weight:700}
+.data-table tr.bold5 td{border-bottom:2px solid var(--gray-200);font-weight:700;color:#111}
+/* Highlighted fixed-rate year row */
+.data-table tr.fixed-year-row td{background:#eef4ff;color:var(--blue-dark)}
+.data-table tr.fixed-year-row:hover td{background:#ddeaff}
+.note-cell{font-size:11px;font-weight:700;text-align:left!important}
 .note-blue{color:var(--blue)}
 .note-green{color:var(--green)}
 
@@ -248,13 +290,14 @@ button,input[type=range],.lang-btn,.lang-opt,.tab-btn,.collapse-btn,.lt-card,.pc
   .cc{padding:8px 9px}
   .cc-month{font-size:13px}
   .chart-container{height:200px}
-  .data-table{font-size:11px}
-  .data-table th,.data-table td{padding:6px 7px}
+  .data-table{font-size:11px;min-width:340px}
+  .data-table th,.data-table td{padding:6px 6px}
+  .data-table th:first-child,.data-table td:first-child{padding-left:4px}
   .table-scroll{-webkit-overflow-scrolling:touch}
   .info-box{font-size:11px;padding:9px 11px}
   .state-badge{font-size:10px;padding:3px 9px}
-  .tab-bar{gap:4px}
-  .tab-btn{padding:5px 11px;font-size:12px}
+  .tab-bar{gap:6px}
+  .tab-btn{padding:7px 12px;font-size:12px;font-weight:600}
   .lang-btn{padding:5px 8px;font-size:11px}
 }
 
@@ -394,12 +437,20 @@ body{overscroll-behavior-y:contain}
 
 /* Better tap states for iOS */
 @media(hover:none){
-  .btn:hover{background:#fff}
-  .tab-btn:hover{background:#fff}
+  /* Keep inactive tab buttons looking neutral on touch */
+  .tab-btn:not(.active-blue):not(.active-green):hover{background:#f0f0f0;border-color:#d0d0d0;color:#444 !important}
+  /* Keep active tab buttons always solid on touch */
+  .tab-btn.active-blue,.tab-btn.active-blue:hover{background:#185FA5 !important;color:#fff !important;border-color:#185FA5 !important}
+  .tab-btn.active-green,.tab-btn.active-green:hover{background:#0F6E56 !important;color:#fff !important;border-color:#0F6E56 !important}
+  /* Nav buttons stay their designated colors on touch */
+  .btn-reset,.btn-reset:hover{background:#c0392b !important;color:#fff !important;border-color:#c0392b !important}
+  .btn-save,.btn-save:hover{background:#0F6E56 !important;color:#fff !important;border-color:#0F6E56 !important}
+  .btn-blue,.btn-blue:hover{background:#185FA5 !important;color:#fff !important;border-color:#185FA5 !important}
+  .btn-outline-gray,.btn-outline-gray:hover{background:#f8f9fa !important;color:#444 !important;border-color:#bbb !important}
   .lt-card:hover{border-color:#e0e0e0;background:#fff}
   .cc:hover{border-color:transparent}
   .pc:hover{border-color:#e0e0e0;background:#fff}
-  .collapse-btn:hover{background:#fff}
+  .collapse-btn:hover{background:#f8f9fa;color:#555;border-color:#ddd}
   .lang-btn:hover{background:#fff}
   .lang-opt:hover{background:#fff}
 }
@@ -451,19 +502,38 @@ body{overscroll-behavior-y:contain}
 <body>
 
 <nav class="top-nav" id="top-nav">
-  <div class="brand">German <span>Loan</span> Calculator</div>
+  <div class="brand" id="brand-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="vertical-align:-7px;margin-right:7px;flex-shrink:0">
+      <rect width="28" height="28" rx="7" fill="#185FA5"/>
+      <path d="M5 14L14 6L23 14" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="9" y="14" width="10" height="8" rx="1" fill="#fff" opacity=".9"/>
+      <rect x="12" y="17" width="4" height="5" rx="0.5" fill="#185FA5"/>
+    </svg><span class="brand-de">German</span> <span class="brand-loan">Loan</span> <span class="brand-calc">Calculator</span>
+  </div>
   <div class="nav-tabs" id="nav-tabs">
     <button class="nav-tab active-mort" id="tab-mort" onclick="switchPage('mortgage')">Mortgage Calculator</button>
     <button class="nav-tab" id="tab-loan" onclick="switchPage('personal')">Personal Loan Calculator</button>
   </div>
   <div class="nav-actions" id="nav-actions">
-    <button class="btn" onclick="clearState()" title="Clear saved data and reload defaults" style="color:#c0392b;border-color:#f5c6c6">Reset</button>
-    <button class="btn" id="save-btn" onclick="saveToFile()" style="font-weight:600;background:#0F6E56;color:#fff;border-color:#0F6E56" title="Downloads this file with your current inputs embedded.">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="vertical-align:-2px;margin-right:5px"><path d="M7 1v8M4 6l3 3 3-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h10" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+    <button class="btn btn-reset" onclick="clearState()" title="Clear all inputs and restore defaults">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style="vertical-align:-2px;margin-right:5px">
+        <path d="M13.5 8A5.5 5.5 0 1 1 10.2 3.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <polygon points="10,0.5 14.5,3.5 10,5" fill="currentColor"/>
+      </svg>
+      Reset
+    </button>
+    <button class="btn btn-save" id="save-btn" onclick="saveToFile()" title="Downloads this file with your current inputs embedded. Open that file to restore all values.">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="vertical-align:-2px;margin-right:5px"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
       <span class="save-label">Save to file</span>
     </button>
-    <button class="btn" onclick="doPrint()">Print</button>
-    <button class="btn btn-blue" id="pdf-btn" onclick="savePDF()">Save as PDF</button>
+    <button class="btn btn-outline-gray" onclick="doPrint()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px"><rect x="2" y="4" width="9" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M4 4V2h5v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 9h5M4 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Print
+    </button>
+    <button class="btn btn-blue" id="pdf-btn" onclick="savePDF()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="vertical-align:-1px;margin-right:4px"><path d="M2 2h6l3 3v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.4"/><path d="M8 2v3h3M4.5 7h4M4.5 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Save as PDF
+    </button>
     <div class="lang-wrap" id="lang-wrap">
       <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
         <span id="lang-flag">🇬🇧</span><span id="lang-code">EN</span>
@@ -688,9 +758,15 @@ body{overscroll-behavior-y:contain}
 
   <!-- AMORTIZATION -->
   <div class="section-card">
-    <div class="section-header">
-      <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
-      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    <div class="section-header" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#eef4ff;border-radius:8px;border:1px solid #c5d8f5;width:100%">
+        <span style="width:12px;height:12px;border-radius:3px;background:#185FA5;flex-shrink:0;display:inline-block"></span>
+        <span id="m-fixed-note-label" style="font-size:12px;color:#185FA5;font-weight:600">Note: The highlighted row indicates when the fixed interest rate period ends</span>
+      </div>
     </div>
     <div class="card-body">
       <div class="tab-bar">
@@ -698,6 +774,25 @@ body{overscroll-behavior-y:contain}
         <button class="tab-btn" onclick="mSetView('monthly',this)" data-lk-tab="tab_monthly">Monthly detail</button>
       </div>
       <div class="table-scroll" id="m-amort-wrap"></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
+    <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+    </div>
+    <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+      <p style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
+        This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
+      </p>
+      <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <p style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+          Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
+        </p>
+      </div>
     </div>
   </div>
 </div><!-- end #page-mortgage -->
@@ -837,9 +932,15 @@ body{overscroll-behavior-y:contain}
 
   <!-- AMORTIZATION -->
   <div class="section-card">
-    <div class="section-header">
-      <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
-      <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+    <div class="section-header" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
+        <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#edfaf4;border-radius:8px;border:1px solid #a8d5c2;width:100%">
+        <span style="width:12px;height:12px;border-radius:3px;background:#0F6E56;flex-shrink:0;display:inline-block"></span>
+        <span style="font-size:12px;color:#0F6E56;font-weight:600">Note: Every 5th year row is highlighted as a milestone marker</span>
+      </div>
     </div>
     <div class="card-body">
       <div class="tab-bar">
@@ -847,6 +948,25 @@ body{overscroll-behavior-y:contain}
         <button class="tab-btn" onclick="pSetView('monthly',this)" data-lk-tab="tab_mo">Monthly</button>
       </div>
       <div class="table-scroll" id="p-amort-wrap"></div>
+    </div>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
+    <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+    </div>
+    <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+      <p style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
+        This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
+      </p>
+      <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <p style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+          Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
+        </p>
+      </div>
     </div>
   </div>
 </div><!-- end #page-personal -->
@@ -1063,9 +1183,9 @@ function mDrawDonut(){
 function mRenderAmort(rows,fixed){
   const w=document.getElementById('m-amort-wrap');
   if(mAmortView==='annual'){
-    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th><th style="width:130px">${T('th_note')}</th></tr></thead><tbody>${Object.values(mAnn).map(y=>`<tr class="${y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe(y.int)}</td><td>${fe(y.prin)}</td><td>${fe(y.tp)}</td><td>${fe(y.bal)}</td><td class="note-cell note-blue">${y.yr===fixed?T('note_fixed'):''}</td></tr>`).join('')}</tbody></table>`;
+    w.innerHTML=`<table class="data-table"><thead><tr><th>${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${Object.values(mAnn).map(y=>`<tr class="${y.yr===fixed?'bold5 fixed-year-row':y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe(y.int)}</td><td>${fe(y.prin)}</td><td>${fe(y.tp)}</td><td>${fe(y.bal)}</td></tr>`).join('')}</tbody></table>`;
   }else{
-    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:60px">${T('th_month')}</th><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe(r.interest)}</td><td>${fe(r.principal)}</td><td>${fe(r.bal)}</td></tr>`).join('')}</tbody></table>`;
+    w.innerHTML=`<table class="data-table"><thead><tr><th>${T('th_month')}</th><th>${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe(r.interest)}</td><td>${fe(r.principal)}</td><td>${fe(r.bal)}</td></tr>`).join('')}</tbody></table>`;
   }
 }
 
@@ -1220,9 +1340,9 @@ function pRenderAmort(rows){
   const w=document.getElementById('p-amort-wrap');
   const ann={};rows.forEach(r=>{if(!ann[r.yr])ann[r.yr]={yr:r.yr,int:0,prin:0,bal:0,tp:0};ann[r.yr].int+=r.int;ann[r.yr].prin+=r.prin;ann[r.yr].bal=r.bal;ann[r.yr].tp+=r.int+r.prin;});
   if(pAmortView==='annual'){
-    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${Object.values(ann).map(y=>`<tr class="${y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe2(y.int)}</td><td>${fe2(y.prin)}</td><td>${fe2(y.tp)}</td><td>${fe2(y.bal)}</td></tr>`).join('')}</tbody></table>`;
+    w.innerHTML=`<table class="data-table"><thead><tr><th>${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_total')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${Object.values(ann).map(y=>`<tr class="${y.yr%5===0?'bold5':''}"><td>${y.yr}</td><td>${fe2(y.int)}</td><td>${fe2(y.prin)}</td><td>${fe2(y.tp)}</td><td>${fe2(y.bal)}</td></tr>`).join('')}</tbody></table>`;
   }else{
-    w.innerHTML=`<table class="data-table"><thead><tr><th style="width:60px">${T('th_month')}</th><th style="width:55px">${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe2(r.int)}</td><td>${fe2(r.prin)}</td><td>${fe2(r.bal)}</td></tr>`).join('')}</tbody></table>`;
+    w.innerHTML=`<table class="data-table"><thead><tr><th>${T('th_month')}</th><th>${T('th_year')}</th><th>${T('th_interest')}</th><th>${T('th_principal')}</th><th>${T('th_balance')}</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.m%12===0?'bold5':''}"><td>${r.m}</td><td>${r.yr}</td><td>${fe2(r.int)}</td><td>${fe2(r.prin)}</td><td>${fe2(r.bal)}</td></tr>`).join('')}</tbody></table>`;
   }
 }
 
