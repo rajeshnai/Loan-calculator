@@ -119,7 +119,7 @@ input[type=range].green-range::-moz-range-thumb{border-color:var(--green)}
 .bar-lbl{font-size:12px;color:var(--gray-600);min-width:110px;flex-shrink:0}
 .bar-bg{flex:1;height:8px;border-radius:4px;background:var(--gray-100);overflow:hidden}
 .bar-fill{height:100%;border-radius:4px;transition:width .3s}
-.bar-val{font-size:12px;font-weight:700;min-width:90px;text-align:right;flex-shrink:0}
+.bar-val{font-size:12px;font-weight:700;min-width:90px;text-align:right;flex-shrink:0;color:var(--gray-800)}
 .divider{height:1px;background:var(--gray-100);margin:14px 0}
 
 /* ── TABS ── */
@@ -389,8 +389,62 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 
 /* ── PRINT ── */
 @media print{
-  body{background:#fff}
-  .top-nav,.nav-actions,.collapse-btn,.tab-bar,.btn,.lang-wrap{display:none!important}
+  /* Force color printing everywhere */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+  /* Always print in light mode regardless of current theme */
+  html{background:#fff!important}
+  body{background:#fff!important;color:#111!important}
+  /* Hide UI chrome */
+  .top-nav,.nav-actions,.collapse-btn,.tab-bar,.btn,.lang-wrap,.theme-btn{display:none!important}
+  /* Remove dark theme overrides for print */
+  [data-theme="dark"] body,[data-theme="dark"] .section-card,[data-theme="dark"] .kpi-card,
+  [data-theme="dark"] .kpi-band,[data-theme="dark"] .data-table th,[data-theme="dark"] .data-table td,
+  [data-theme="dark"] .disc-wrap,[data-theme="dark"] .disc-header,[data-theme="dark"] .disc-body,
+  [data-theme="dark"] .disc-warn-box,[data-theme="dark"] .cost-total-row{
+    background:#fff!important;color:#111!important;border-color:#e0e0e0!important
+  }
+  /* KPI cards keep their light-mode accent colors */
+  [data-theme="dark"] .kpi-card.accent-blue{background:#E6F1FB!important}
+  [data-theme="dark"] .kpi-card.accent-blue .kpi-value{color:#0C447C!important}
+  [data-theme="dark"] .kpi-card.accent-blue .kpi-label{color:#185FA5!important}
+  [data-theme="dark"] .kpi-card.accent-blue .kpi-sub{color:#185FA5!important}
+  [data-theme="dark"] .kpi-card.accent-green{background:#EAF3DE!important}
+  [data-theme="dark"] .kpi-card.accent-green .kpi-value{color:#085041!important}
+  [data-theme="dark"] .kpi-card.accent-green .kpi-label{color:#0F6E56!important}
+  [data-theme="dark"] .kpi-card.accent-amber{background:#FAEEDA!important}
+  [data-theme="dark"] .kpi-card.accent-amber .kpi-value{color:#633806!important}
+  [data-theme="dark"] .kpi-card.accent-amber .kpi-label{color:#854F0B!important}
+  [data-theme="dark"] .kpi-value{color:#111!important}
+  [data-theme="dark"] .kpi-label{color:#888!important}
+  [data-theme="dark"] .kpi-sub{color:#999!important}
+  /* Section cards */
+  [data-theme="dark"] .section-card{background:#fff!important;border-color:#e0e0e0!important}
+  [data-theme="dark"] .section-header{border-bottom-color:#f0f0f0!important}
+  /* Tables */
+  [data-theme="dark"] .data-table th{background:#f8f9fa!important;color:#999!important;border-bottom-color:#e0e0e0!important}
+  [data-theme="dark"] .data-table td{color:#333!important;border-bottom-color:#f0f0f0!important}
+  [data-theme="dark"] .data-table tr.fixed-year-row td{background:#eef4ff!important;color:#185FA5!important}
+  /* Disclaimer */
+  [data-theme="dark"] .disc-header{background:#f5f7ff!important;border-bottom-color:#dde3f5!important}
+  [data-theme="dark"] .disc-title{color:#185FA5!important}
+  [data-theme="dark"] .disc-main{color:#444!important}
+  [data-theme="dark"] .disc-strong{color:#222!important}
+  [data-theme="dark"] .disc-warn-box{background:#fffbec!important;border-color:#f0d888!important}
+  [data-theme="dark"] .disc-warn-text{color:#6b4400!important}
+  /* Cost total */
+  [data-theme="dark"] .cost-total-row{background:#E6F1FB!important;border-color:#c5d8f5!important}
+  [data-theme="dark"] .cost-total-label{color:#185FA5!important}
+  [data-theme="dark"] .cost-total-amount{color:#0C447C!important}
+  /* Info boxes */
+  [data-theme="dark"] .info-box{background:#E6F1FB!important;color:#185FA5!important}
+  /* State badge */
+  [data-theme="dark"] .state-badge{background:#E6F1FB!important;color:#185FA5!important}
+  /* Fixed note banner */
+  [data-theme="dark"] #m-fixed-note-banner{background:#eef4ff!important;border-color:#c5d8f5!important}
+  [data-theme="dark"] #m-fixed-note-label{color:#185FA5!important}
+  /* Nav tabs text (visible if nav shown) */
+  [data-theme="dark"] .brand-de{color:#111!important}
+  /* Layout */
   .page{padding:0;display:block!important}
   .section-card{border:1px solid #e0e0e0!important;break-inside:avoid;margin-bottom:10px}
   .kpi-card{break-inside:avoid}
@@ -494,6 +548,28 @@ body{overscroll-behavior-y:contain}
   .kpi-value{font-size:24px}
 }
 
+/* ── DISCLAIMER ── */
+.disc-wrap{margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit}
+.disc-header{background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px}
+.disc-title{font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em}
+.disc-body{background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.disc-main{font-size:12.5px;color:#444;line-height:1.65;margin:0}
+.disc-strong{color:#222}
+.disc-warn-box{display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888}
+.disc-warn-text{font-size:12px;color:#6b4400;line-height:1.6;margin:0}
+.disc-warn-text strong{color:#4a2d00}
+
+/* Disclaimer — dark theme */
+[data-theme="dark"] .disc-wrap{border-color:#2e2e2e}
+[data-theme="dark"] .disc-header{background:#1a1e2e;border-bottom-color:#2a3050}
+[data-theme="dark"] .disc-title{color:#5A9FDE}
+[data-theme="dark"] .disc-body{background:#1a1a1a}
+[data-theme="dark"] .disc-main{color:#aaa}
+[data-theme="dark"] .disc-strong{color:#e8e8e8}
+[data-theme="dark"] .disc-warn-box{background:#1c1500;border-color:#3d2e00}
+[data-theme="dark"] .disc-warn-text{color:#c9a040}
+[data-theme="dark"] .disc-warn-text strong{color:#E8A830}
+
 /* ── PURCHASE COST SUM ROWS ── */
 .cost-sum-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px;padding:4px 8px;background:#f0f4ff;border-radius:5px;gap:6px;flex-wrap:wrap}
 .cost-sum-label{font-size:11px;color:#555;flex:1;min-width:0}
@@ -513,6 +589,213 @@ body{overscroll-behavior-y:contain}
   .cost-total-amount{font-size:17px}
   .cost-total-items{gap:4px}
   .cost-total-item{font-size:11px}
+}
+
+/* ══════════════════════════════════════════
+   THEME TOGGLE BUTTON
+══════════════════════════════════════════ */
+.theme-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;border-radius:7px;
+  border:1.5px solid #ddd;background:#f8f9fa;
+  cursor:pointer;flex-shrink:0;transition:background .15s,border-color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.theme-btn:hover{background:#eee;border-color:#bbb}
+.theme-btn svg{transition:transform .3s,opacity .2s}
+
+/* ══════════════════════════════════════════
+   DARK THEME
+══════════════════════════════════════════ */
+[data-theme="dark"]{
+  --blue:#5A9FDE;--blue-dark:#7BBEF0;--blue-light:#0d2236;--blue-mid:#4A8FCC;
+  --green:#3DBE90;--green-dark:#5DCAA5;--green-light:#0a1f18;--green-mid:#2DA878;
+  --amber:#E8A830;--amber-light:#1f1600;--amber-dark:#F5C842;
+  --coral:#E87550;--coral-light:#1f0c07;
+  --gray-50:#1e1e1e;--gray-100:#2a2a2a;--gray-200:#3a3a3a;--gray-400:#aaa;--gray-600:#ccc;--gray-800:#f0f0f0;
+  --border:1px solid #333;
+  --shadow:0 1px 3px rgba(0,0,0,.4);
+}
+
+[data-theme="dark"] body{background:#121212;color:#e8e8e8}
+
+/* Nav */
+[data-theme="dark"] .top-nav{background:#1a1a1a;border-bottom-color:#333}
+[data-theme="dark"] .brand-de{color:#f0f0f0}
+[data-theme="dark"] .brand-calc{color:#aaa}
+[data-theme="dark"] .nav-tab{color:#888}
+[data-theme="dark"] .nav-tab:hover{color:#f0f0f0}
+[data-theme="dark"] .nav-tab.active-mort{color:var(--blue)}
+[data-theme="dark"] .nav-tab.active-loan{color:var(--green)}
+
+/* Buttons */
+[data-theme="dark"] .btn{background:#2a2a2a !important;border-color:#444 !important;color:#ddd !important}
+[data-theme="dark"] .btn:hover{background:#383838 !important;border-color:#666 !important;color:#fff !important}
+[data-theme="dark"] .btn-save{background:#0F6E56 !important;color:#fff !important;border-color:#0F6E56 !important}
+[data-theme="dark"] .btn-save:hover{background:#085041 !important;border-color:#085041 !important}
+[data-theme="dark"] .btn-blue{background:#185FA5 !important;color:#fff !important;border-color:#185FA5 !important}
+[data-theme="dark"] .btn-blue:hover{background:#0C447C !important;border-color:#0C447C !important}
+[data-theme="dark"] .btn-outline-gray{background:#2a2a2a !important;color:#ccc !important;border-color:#444 !important}
+[data-theme="dark"] .btn-outline-gray:hover{background:#383838 !important;border-color:#666 !important;color:#fff !important}
+[data-theme="dark"] .theme-btn{background:#2a2a2a;border-color:#444;color:#ccc}
+[data-theme="dark"] .theme-btn:hover{background:#383838;border-color:#666}
+
+/* Cards & sections */
+[data-theme="dark"] .section-card{background:#1e1e1e;border-color:#333}
+[data-theme="dark"] .section-header{border-bottom-color:#2a2a2a}
+[data-theme="dark"] .kpi-card{background:#1e1e1e;border-color:#333}
+[data-theme="dark"] .kpi-card.accent-blue{background:#0d2236;border-color:#1a3a5c}
+[data-theme="dark"] .kpi-card.accent-green{background:#0a1f18;border-color:#143d2c}
+[data-theme="dark"] .kpi-card.accent-amber{background:#1a1200;border-color:#3d2e00}
+[data-theme="dark"] .kpi-value{color:#f0f0f0}
+[data-theme="dark"] .kpi-card.accent-blue .kpi-value{color:#7BBEF0}
+[data-theme="dark"] .kpi-card.accent-green .kpi-value{color:#5DCAA5}
+[data-theme="dark"] .kpi-card.accent-amber .kpi-value{color:#F5C842}
+[data-theme="dark"] .kpi-label{color:#888}
+[data-theme="dark"] .kpi-card.accent-blue .kpi-label{color:#5A9FDE}
+[data-theme="dark"] .kpi-card.accent-green .kpi-label{color:#3DBE90}
+[data-theme="dark"] .kpi-card.accent-amber .kpi-label{color:#E8A830}
+[data-theme="dark"] .kpi-sub{color:#888}
+[data-theme="dark"] .kpi-card.accent-blue .kpi-sub{color:#5A9FDE}
+[data-theme="dark"] .kpi-card.accent-green .kpi-sub{color:#3DBE90}
+
+/* Inputs */
+[data-theme="dark"] .num-box{background:#252525;border-color:#3a3a3a}
+[data-theme="dark"] .num-box:focus-within{background:#1e1e1e;border-color:var(--blue)}
+[data-theme="dark"] .num-box input{color:#f0f0f0}
+[data-theme="dark"] .num-box .pre,.num-box .suf{color:#777}
+[data-theme="dark"] .num-box .suf{color:#777}
+[data-theme="dark"] .field-label{color:#bbb}
+[data-theme="dark"] .range-hint{color:#666 !important}
+[data-theme="dark"] .slider-limits{color:#666}
+[data-theme="dark"] input[type=range]{background:linear-gradient(to right,var(--blue) 0%,var(--blue) var(--pct,50%),#3a3a3a var(--pct,50%),#3a3a3a 100%)}
+[data-theme="dark"] input[type=range].green-range{background:linear-gradient(to right,var(--green) 0%,var(--green) var(--pct,50%),#3a3a3a var(--pct,50%),#3a3a3a 100%)}
+[data-theme="dark"] input[type=range]::-webkit-slider-thumb{background:#1e1e1e;border-color:var(--blue)}
+[data-theme="dark"] input[type=range].green-range::-webkit-slider-thumb{border-color:var(--green)}
+
+/* Collapse btn */
+[data-theme="dark"] .collapse-btn{background:#2a2a2a;border-color:#444;color:#aaa}
+[data-theme="dark"] .collapse-btn:hover{background:#333;border-color:#666;color:#fff}
+
+/* Tables */
+[data-theme="dark"] .data-table th{background:#252525;border-bottom-color:#3a3a3a;color:#888}
+[data-theme="dark"] .data-table td{border-bottom-color:#2a2a2a;color:#ccc}
+[data-theme="dark"] .data-table tr:hover td{background:#252525}
+[data-theme="dark"] .data-table tr.bold5 td{border-bottom-color:#3a3a3a;color:#f0f0f0}
+[data-theme="dark"] .data-table tr.fixed-year-row td{background:#0d1e33;color:#7BBEF0}
+[data-theme="dark"] .data-table tr.fixed-year-row:hover td{background:#112840}
+
+/* Info boxes */
+[data-theme="dark"] .info-box{background:#0d2236;color:#7BBEF0}
+[data-theme="dark"] .info-box.green{background:#0a1f18;color:#5DCAA5}
+
+/* State select & badge */
+[data-theme="dark"] .state-select{background:#252525;border-color:#3a3a3a;color:#e0e0e0}
+[data-theme="dark"] .state-badge{background:#0d2236;color:#7BBEF0}
+
+/* Loan type cards */
+[data-theme="dark"] .lt-card{background:#1e1e1e;border-color:#333}
+[data-theme="dark"] .lt-card:hover{background:#252525;border-color:#4A8FCC}
+[data-theme="dark"] .lt-card.sel{background:#0a1f18;border-color:var(--green)}
+[data-theme="dark"] .lt-name{color:#e8e8e8}
+[data-theme="dark"] .lt-card.sel .lt-name{color:#5DCAA5}
+[data-theme="dark"] .lt-desc{color:#888}
+[data-theme="dark"] .lt-card.sel .lt-desc{color:#3DBE90}
+
+/* Purpose cards */
+[data-theme="dark"] .pc{background:#1e1e1e;border-color:#333}
+[data-theme="dark"] .pc:hover{background:#252525;border-color:#2DA878}
+[data-theme="dark"] .pc.sel{background:#0a1f18;border-color:var(--green)}
+[data-theme="dark"] .pc-name{color:#ccc}
+[data-theme="dark"] .pc.sel .pc-name{color:#5DCAA5}
+
+/* Compare grid */
+[data-theme="dark"] .cc{background:#252525}
+[data-theme="dark"] .cc:hover{border-color:#2DA878}
+[data-theme="dark"] .cc.cur-green{background:#0a1f18;border-color:var(--green)}
+[data-theme="dark"] .cc-month{color:#e8e8e8}
+[data-theme="dark"] .cc.cur-green .cc-month{color:#3DBE90}
+[data-theme="dark"] .cc-int{color:#888}
+[data-theme="dark"] .cc-dur{color:#777}
+[data-theme="dark"] .cc.cur-green .cc-dur{color:#5DCAA5}
+
+/* Tab buttons */
+[data-theme="dark"] .tab-btn{background:#2a2a2a;border-color:#3a3a3a;color:#aaa !important}
+[data-theme="dark"] .tab-btn:hover{background:#333;border-color:#555;color:#e0e0e0 !important}
+[data-theme="dark"] .tab-btn.active-blue{background:#185FA5 !important;color:#fff !important;border-color:#185FA5 !important}
+[data-theme="dark"] .tab-btn.active-green{background:#0F6E56 !important;color:#fff !important;border-color:#0F6E56 !important}
+
+/* Lang switcher */
+[data-theme="dark"] .lang-btn{background:#2a2a2a;border-color:#444;color:#ccc}
+[data-theme="dark"] .lang-btn:hover{background:#333}
+[data-theme="dark"] .lang-dd{background:#1e1e1e;border-color:#3a3a3a;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+[data-theme="dark"] .lang-opt{color:#ccc}
+[data-theme="dark"] .lang-opt:hover{background:#2a2a2a}
+[data-theme="dark"] .lang-opt.active{background:#0d2236;color:#7BBEF0}
+
+/* Divider & bars */
+[data-theme="dark"] .divider{background:#2a2a2a}
+[data-theme="dark"] .bar-bg{background:#2a2a2a}
+[data-theme="dark"] .bar-lbl{color:#bbb}
+[data-theme="dark"] .bar-val{color:#f0f0f0}
+[data-theme="dark"] .monthly-sub{color:#888}
+
+/* Fixed rate note banner */
+[data-theme="dark"] #m-fixed-note-label{color:#7BBEF0}
+[data-theme="dark"] #m-fixed-note-banner{background:#0d1e33 !important;border-color:#1a3a5c !important}
+
+/* Purchase cost rows */
+[data-theme="dark"] .cost-sum-row{background:#1a2030}
+[data-theme="dark"] .cost-sum-label{color:#aaa}
+[data-theme="dark"] .cost-sum-amount{color:#5A9FDE}
+[data-theme="dark"] .cost-total-row{background:#0d2236;border-color:#1a3a5c}
+[data-theme="dark"] .cost-total-label{color:#5A9FDE}
+[data-theme="dark"] .cost-total-item{color:#bbb}
+[data-theme="dark"] .cost-total-item strong{color:#f0f0f0}
+[data-theme="dark"] .cost-total-sep{color:#555}
+[data-theme="dark"] .cost-total-equals{color:#5A9FDE}
+[data-theme="dark"] .cost-total-amount{color:#7BBEF0}
+
+/* Disclaimer */
+[data-theme="dark"] #m-disclaimer-title,
+[data-theme="dark"] #p-disclaimer-title{color:#5A9FDE !important}
+[data-theme="dark"] #m-disclaimer-main,
+[data-theme="dark"] #p-disclaimer-main{color:#bbb}
+[data-theme="dark"] #m-disclaimer-main strong,
+[data-theme="dark"] #p-disclaimer-main strong{color:#f0f0f0}
+[data-theme="dark"] #m-disclaimer-warn,
+[data-theme="dark"] #p-disclaimer-warn{color:#c49a3a}
+[data-theme="dark"] #m-disclaimer-warn strong,
+[data-theme="dark"] #p-disclaimer-warn strong{color:#E8A830}
+
+/* KPI band sticky bg */
+[data-theme="dark"] .kpi-band-sticky{background:#121212 !important}
+
+/* Restore toast */
+[data-theme="dark"] #restore-toast{background:#1D9E75}
+
+/* Inline-styled panels: fixed-rate note, disclaimer headers, amber warning boxes */
+[data-theme="dark"] [style*="eef4ff"]{background:#0d1e33 !important;border-color:#1a3a5c !important}
+[data-theme="dark"] [style*="f5f7ff"]{background:#1a1e2e !important;border-color:#2a3050 !important}
+[data-theme="dark"] [style*="fffbec"]{background:#1a1500 !important;border-color:#3d2e00 !important}
+[data-theme="dark"] [style*="f0d888"]{border-color:#4d3c00 !important}
+[data-theme="dark"] [style*="#6b4400"]{color:#c49a3a !important}
+[data-theme="dark"] [style*="color:#444"]{color:#bbb !important}
+[data-theme="dark"] [style*="color:#222"]{color:#f0f0f0 !important}
+[data-theme="dark"] [style*="color:#185FA5"]{color:#5A9FDE !important}
+[data-theme="dark"] [style*="color:#0C447C"]{color:#7BBEF0 !important}
+[data-theme="dark"] [style*="background:#E6F1FB"]{background:#0d2236 !important;border-color:#1a3a5c !important}
+[data-theme="dark"] [style*="background:#f5f7ff"]{background:#1a1e2e !important}
+
+/* Donut centre fill in dark */
+[data-theme="dark"] #m-donut{filter:none}
+
+/* Transition for smooth toggling */
+body,
+.top-nav,.section-card,.kpi-card,.num-box,.lt-card,.pc,.cc,
+.data-table th,.data-table td,.tab-btn,.lang-btn,.lang-dd,
+.collapse-btn,.btn,.state-select{
+  transition:background-color .25s, border-color .25s, color .2s;
 }
 </style>
 <script id="saved-state" type="application/json">{}</script>
@@ -544,6 +827,16 @@ body{overscroll-behavior-y:contain}
     <button class="btn btn-blue" id="pdf-btn" onclick="savePDF()">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0"><path d="M2 2h6l3 3v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.4"/><path d="M8 2v3h3M4.5 7h4M4.5 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       Save as PDF
+    </button>
+    <!-- THEME TOGGLE -->
+    <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle dark/light mode">
+      <svg id="theme-icon-sun" width="18" height="18" viewBox="0 0 18 18" fill="none" style="display:none">
+        <circle cx="9" cy="9" r="3.5" stroke="#E8A830" stroke-width="1.8"/>
+        <path d="M9 1.5V3M9 15V16.5M1.5 9H3M15 9H16.5M3.7 3.7l1.06 1.06M13.24 13.24l1.06 1.06M14.3 3.7l-1.06 1.06M4.76 13.24l-1.06 1.06" stroke="#E8A830" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <svg id="theme-icon-moon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M15 10.5A7 7 0 1 1 7.5 3a5 5 0 0 0 7.5 7.5z" stroke="#555" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
     <div class="lang-wrap" id="lang-wrap">
       <button class="lang-btn" id="lang-btn" onclick="langToggle(event)">
@@ -817,7 +1110,7 @@ body{overscroll-behavior-y:contain}
         <span class="section-title" data-lk="sec_amort">Amortization schedule</span>
         <button class="collapse-btn" onclick="togCard(this)">Collapse</button>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#eef4ff;border-radius:8px;border:1px solid #c5d8f5;width:100%">
+      <div id="m-fixed-note-banner" style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#eef4ff;border-radius:8px;border:1px solid #c5d8f5;width:100%">
         <span style="width:12px;height:12px;border-radius:3px;background:#185FA5;flex-shrink:0;display:inline-block"></span>
         <span id="m-fixed-note-label" style="font-size:12px;color:#185FA5;font-weight:600">Note: The highlighted row indicates when the fixed interest rate period ends</span>
       </div>
@@ -832,18 +1125,18 @@ body{overscroll-behavior-y:contain}
   </div>
 
   <!-- DISCLAIMER -->
-  <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
-    <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
+  <div class="disc-wrap">
+    <div class="disc-header">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span data-lk="disc_title" style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+      <span data-lk="disc_title" class="disc-title">Disclaimer</span>
     </div>
-    <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
-      <p data-lk-html="disc_body" style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
-        This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
+    <div class="disc-body">
+      <p data-lk-html="disc_body" class="disc-main">
+        This calculator is for <strong class="disc-strong">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
       </p>
-      <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
+      <div class="disc-warn-box">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <p data-lk-html="disc_warn" style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+        <p data-lk-html="disc_warn" class="disc-warn-text">
           Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
         </p>
       </div>
@@ -1006,18 +1299,18 @@ body{overscroll-behavior-y:contain}
   </div>
 
   <!-- DISCLAIMER -->
-  <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
-    <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
+  <div class="disc-wrap">
+    <div class="disc-header">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span data-lk="disc_title" style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+      <span data-lk="disc_title" class="disc-title">Disclaimer</span>
     </div>
-    <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
-      <p data-lk-html="disc_body" style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
-        This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
+    <div class="disc-body">
+      <p data-lk-html="disc_body" class="disc-main">
+        This calculator is for <strong class="disc-strong">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
       </p>
-      <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
+      <div class="disc-warn-box">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <p data-lk-html="disc_warn" style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+        <p data-lk-html="disc_warn" class="disc-warn-text">
           Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
         </p>
       </div>
@@ -1067,7 +1360,27 @@ function switchPage(p){
 
 }
 
-function doPrint(){window.print();}
+function doPrint(){
+  // Temporarily remove dark theme so print is always clean & colourful
+  const wasDark=DARK_MODE;
+  if(wasDark){
+    document.documentElement.removeAttribute('data-theme');
+  }
+  // Small delay so browser repaints before print dialog opens
+  setTimeout(()=>{
+    window.print();
+    // Restore theme after print dialog closes (afterprint event or fallback)
+    const restore=()=>{
+      if(wasDark){
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+      window.removeEventListener('afterprint',restore);
+    };
+    window.addEventListener('afterprint',restore);
+    // Fallback: restore after 3 seconds if afterprint doesn't fire
+    setTimeout(restore,3000);
+  },80);
+}
 
 /* ═══════════════════════════
    TOGGLE SWITCH STYLING
@@ -1194,7 +1507,7 @@ function mCalc(){
         ${x.rate!==null?'<span style=\'color:#aaa;font-size:11px\'> @ '+x.rate.toFixed(2)+'%</span>':''}
         ${x.pct!==null?'<span style=\'color:#aaa;font-size:11px\'> ('+x.pct.toFixed(1)+'% '+T('leg_of_price')+')</span>':''}
       </span>
-      <span style="font-weight:700;color:#111;min-width:75px;text-align:right">${fe(x.v)}</span>
+      <span style="font-weight:700;color:var(--gray-800);min-width:75px;text-align:right">${fe(x.v)}</span>
     </div>`).join('');
 
   document.getElementById('m-monthly-big').textContent=fe(mr);
@@ -1247,7 +1560,7 @@ function mDrawDonut(){
     ctx.beginPath();ctx.moveTo(70,70);ctx.arc(70,70,62,ang,ang+sw);ctx.closePath();
     ctx.fillStyle=s.c;ctx.fill();ang+=sw;
   });
-  ctx.beginPath();ctx.arc(70,70,38,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  ctx.beginPath();ctx.arc(70,70,38,0,Math.PI*2);ctx.fillStyle=DARK_MODE?'#1e1e1e':'#fff';ctx.fill();
 }
 
 function mRenderAmort(rows,fixed){
@@ -1383,8 +1696,8 @@ function pDrawChart(amt,rate,months){
       responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'€'+c.parsed.y.toLocaleString('de-DE')}}},
       scales:{
-        x:{stacked:true,grid:{display:false},ticks:{color:'#999',font:{size:11}}},
-        y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#999',font:{size:11},callback:v=>'€'+v.toLocaleString('de-DE')}}
+        x:{stacked:true,grid:{display:false},ticks:{color:DARK_MODE?'#888':'#999',font:{size:11}}},
+        y:{stacked:true,grid:{color:DARK_MODE?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.05)'},ticks:{color:DARK_MODE?'#888':'#999',font:{size:11},callback:v=>'€'+v.toLocaleString('de-DE')}}
       }
     }
   });
@@ -1506,11 +1819,18 @@ tr.b5 td{border-bottom:2px solid #ddd;font-weight:700}
 .cc.cur .cc-m{color:VAR_ACCENT}
 .cc-i{font-size:11px;color:#aaa;margin-top:2px}
 .foot{text-align:center;margin-top:18px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#ccc}
+.cost-tot{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding:11px 14px;background:VAR_LIGHT;border-radius:8px;border:1px solid VAR_ACCENT;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ct-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:VAR_ACCENT;white-space:nowrap}
+.ct-items{flex:1;font-size:12px;color:#555}
+.ct-items strong{color:#111}
+.ct-eq{font-size:16px;font-weight:700;color:VAR_ACCENT_DARK;white-space:nowrap}
 @media print{
   @page{margin:10mm 8mm;size:A4 landscape}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
   body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .sec,.kc,.cc{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sec,.kc,.cc,.krow,.chip,.bb,.bf,.lg-dot,.mn,.stl,.flv,.kv,.kl{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sec{break-inside:avoid}
+  .krow{break-inside:avoid}
 }`;
 
 function pbar(lbl,val,tot,col){
@@ -1572,7 +1892,13 @@ function saveMortgagePDF(){
     <div><div class="fll">Transfer tax</div><div class="flv">${tax.toFixed(2)}%</div><div class="flv2">${fe(tA)}</div></div>
     <div><div class="fll">Notary + land registry</div><div class="flv">${notary.toFixed(2)}%</div><div class="flv2">${fe(nA)}</div></div>
     <div><div class="fll">Agent commission</div><div class="flv">${agent.toFixed(2)}%</div><div class="flv2">${fe(aA)}</div></div>
-  </div></div>
+  </div>
+  <div class="cost-tot">
+    <span class="ct-lbl">TOTAL PURCHASE COSTS</span>
+    <span class="ct-items">Tax: <strong>${fe(tA)}</strong> &nbsp;+&nbsp; Notary: <strong>${fe(nA)}</strong> &nbsp;+&nbsp; Agent: <strong>${fe(aA)}</strong></span>
+    <span class="ct-eq">= ${fe(costs)}</span>
+  </div>
+  </div>
   <div class="r2">
     <div class="sec"><div class="stl">Cost breakdown</div>
       <div style="display:flex;gap:18px;align-items:center">
@@ -2070,8 +2396,52 @@ function togCard(btn){
   btn.textContent=hidden?T('col_collapse'):T('col_expand');
 }
 
+/* ════════════════════════════════════
+   DARK / LIGHT THEME
+════════════════════════════════════ */
+let DARK_MODE=false;
+
+function toggleTheme(){
+  DARK_MODE=!DARK_MODE;
+  applyTheme();
+  try{localStorage.setItem('glc_theme',DARK_MODE?'dark':'light');}catch(e){}
+}
+
+function applyTheme(){
+  const html=document.documentElement;
+  if(DARK_MODE){
+    html.setAttribute('data-theme','dark');
+  }else{
+    html.removeAttribute('data-theme');
+  }
+  // swap icons
+  const sun=document.getElementById('theme-icon-sun');
+  const moon=document.getElementById('theme-icon-moon');
+  if(sun) sun.style.display=DARK_MODE?'block':'none';
+  if(moon) moon.style.display=DARK_MODE?'none':'block';
+  // update moon stroke colour in dark mode
+  if(moon){
+    moon.querySelector('path').setAttribute('stroke', DARK_MODE?'#aaa':'#555');
+  }
+  // redraw charts so they pick up new colours
+  if(typeof pCalc==='function') pCalc();
+  if(typeof mCalc==='function') mCalc();
+}
+
+function initTheme(){
+  try{
+    const saved=localStorage.getItem('glc_theme');
+    // Also respect OS preference if no saved setting
+    if(saved==='dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)){
+      DARK_MODE=true;
+    }
+  }catch(e){}
+  applyTheme();
+}
+
 const hadSaved=loadEmbeddedState();
 syncInputsFromState();
+initTheme();
 mCalc();
 pCalc();
 if(hadSaved)showToast('Your saved inputs have been restored.');
