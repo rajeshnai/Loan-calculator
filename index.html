@@ -493,6 +493,27 @@ body{overscroll-behavior-y:contain}
   .page{max-width:1100px}
   .kpi-value{font-size:24px}
 }
+
+/* ── PURCHASE COST SUM ROWS ── */
+.cost-sum-row{display:flex;align-items:center;justify-content:space-between;margin-top:5px;padding:4px 8px;background:#f0f4ff;border-radius:5px;gap:6px;flex-wrap:wrap}
+.cost-sum-label{font-size:11px;color:#555;flex:1;min-width:0}
+.cost-sum-amount{font-size:12px;font-weight:700;color:#185FA5;white-space:nowrap;flex-shrink:0}
+.cost-total-row{margin-top:14px;padding:12px 16px;background:#E6F1FB;border-radius:9px;border:1px solid #c5d8f5}
+.cost-total-inner{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cost-total-label{font-size:12px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;margin-right:4px}
+.cost-total-items{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1}
+.cost-total-item{font-size:12px;color:#444}
+.cost-total-item strong{color:#111}
+.cost-total-sep{font-size:13px;color:#888;font-weight:700}
+.cost-total-equals{font-size:15px;font-weight:700;color:#185FA5;margin-right:4px}
+.cost-total-sum{display:flex;align-items:center;margin-left:auto;flex-shrink:0}
+.cost-total-amount{font-size:20px;font-weight:700;color:#0C447C}
+@media(max-width:480px){
+  .cost-total-inner{gap:6px}
+  .cost-total-amount{font-size:17px}
+  .cost-total-items{gap:4px}
+  .cost-total-item{font-size:11px}
+}
 </style>
 <script id="saved-state" type="application/json">{}</script>
 </head>
@@ -514,11 +535,11 @@ body{overscroll-behavior-y:contain}
   <div class="nav-actions" id="nav-actions">
     <button class="btn btn-save" id="save-btn" onclick="saveToFile()" title="Downloads this file with your current inputs embedded. Open that file to restore all values.">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 1v8M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 11h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      <span class="save-label">Save to file</span>
+      <span class="save-label" data-lk="btn_save">Save to file</span>
     </button>
     <button class="btn btn-outline-gray" onclick="doPrint()">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0"><rect x="2" y="4" width="9" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M4 4V2h5v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 9h5M4 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      Print
+      <span id="print-btn-label" data-lk="btn_print">Print</span>
     </button>
     <button class="btn btn-blue" id="pdf-btn" onclick="savePDF()">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0"><path d="M2 2h6l3 3v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.4"/><path d="M8 2v3h3M4.5 7h4M4.5 9h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -671,28 +692,54 @@ body{overscroll-behavior-y:contain}
       </div>
       <div class="grid-3">
         <div class="field">
-          <div class="field-label"><span data-lk="fl_tax">Transfer tax (Grunderwerbsteuer)</span <span class="range-hint">0–10%</span></div>
+          <div class="field-label"><span data-lk="fl_tax">Transfer tax (Grunderwerbsteuer)</span> <span class="range-hint">0–10%</span></div>
           <div class="input-row">
             <input type="range" id="m-s-tax" min="0" max="10" step="0.01" value="6" oninput="mFS('tax')" class="blue-range">
             <div class="num-box"><input type="text" id="m-i-tax" value="6.00" onchange="mFI('tax')" onkeydown="mFK(event,'tax')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
           </div>
-          <div id="m-tax-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €30,000 on €500,000</div>
+          <div class="cost-sum-row">
+            <span class="cost-sum-label" id="m-tax-applied">6.00% of €500,000</span>
+            <span class="cost-sum-amount" id="m-tax-amount">= €30,000</span>
+          </div>
         </div>
         <div class="field">
-          <div class="field-label"><span data-lk="fl_notary">Notary + land registry</span <span class="range-hint">0–5%</span></div>
+          <div class="field-label"><span data-lk="fl_notary">Notary + land registry</span> <span class="range-hint">0–5%</span></div>
           <div class="input-row">
             <input type="range" id="m-s-notary" min="0" max="5" step="0.01" value="1.5" oninput="mFS('notary')" class="blue-range">
             <div class="num-box"><input type="text" id="m-i-notary" value="1.50" onchange="mFI('notary')" onkeydown="mFK(event,'notary')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
           </div>
-          <div id="m-notary-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €7,500 on €500,000</div>
+          <div class="cost-sum-row">
+            <span class="cost-sum-label" id="m-notary-applied">1.50% of €500,000</span>
+            <span class="cost-sum-amount" id="m-notary-amount">= €7,500</span>
+          </div>
         </div>
         <div class="field">
-          <div class="field-label"><span data-lk="fl_agent">Agent commission</span <span class="range-hint">0–8%</span></div>
+          <div class="field-label"><span data-lk="fl_agent">Agent commission</span> <span class="range-hint">0–8%</span></div>
           <div class="input-row">
             <input type="range" id="m-s-agent" min="0" max="8" step="0.01" value="1.5" oninput="mFS('agent')" class="blue-range">
             <div class="num-box"><input type="text" id="m-i-agent" value="1.50" onchange="mFI('agent')" onkeydown="mFK(event,'agent')" onfocus="selAll(this)" style="text-align:right;padding-right:0"><span class="suf">%</span></div>
           </div>
-          <div id="m-agent-applied" style="font-size:11px;color:var(--gray-400);margin-top:4px">Applies: €7,500 on €500,000</div>
+          <div class="cost-sum-row">
+            <span class="cost-sum-label" id="m-agent-applied">1.50% of €500,000</span>
+            <span class="cost-sum-amount" id="m-agent-amount">= €7,500</span>
+          </div>
+        </div>
+      </div>
+      <!-- Total purchase costs summary row -->
+      <div class="cost-total-row" id="m-cost-total-row">
+        <div class="cost-total-inner">
+          <span class="cost-total-label">Total purchase costs</span>
+          <div class="cost-total-items">
+            <span class="cost-total-item">Tax: <strong id="m-total-tax-val">€30,000</strong></span>
+            <span class="cost-total-sep">+</span>
+            <span class="cost-total-item">Notary: <strong id="m-total-notary-val">€7,500</strong></span>
+            <span class="cost-total-sep">+</span>
+            <span class="cost-total-item">Agent: <strong id="m-total-agent-val">€7,500</strong></span>
+          </div>
+          <div class="cost-total-sum">
+            <span class="cost-total-equals">=</span>
+            <span class="cost-total-amount" id="m-total-costs-val">€45,000</span>
+          </div>
         </div>
       </div>
     </div>
@@ -788,15 +835,15 @@ body{overscroll-behavior-y:contain}
   <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
     <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+      <span data-lk="disc_title" style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
     </div>
     <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
-      <p style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
+      <p data-lk-html="disc_body" style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
         This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
       </p>
       <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <p style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+        <p data-lk-html="disc_warn" style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
           Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
         </p>
       </div>
@@ -962,15 +1009,15 @@ body{overscroll-behavior-y:contain}
   <div style="margin-top:28px;border-radius:10px;overflow:hidden;border:1px solid #e0e0e0;font-family:inherit">
     <div style="background:#f5f7ff;padding:10px 16px;border-bottom:1px solid #dde3f5;display:flex;align-items:center;gap:7px">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="6.5" fill="#185FA5"/><path d="M7 4.5v3M7 9v1" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-      <span style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
+      <span data-lk="disc_title" style="font-size:11px;font-weight:700;color:#185FA5;text-transform:uppercase;letter-spacing:.07em">Disclaimer</span>
     </div>
     <div style="background:#fff;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
-      <p style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
+      <p data-lk-html="disc_body" style="font-size:12.5px;color:#444;line-height:1.65;margin:0">
         This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.
       </p>
       <div style="display:flex;align-items:flex-start;gap:9px;background:#fffbec;border-radius:7px;padding:9px 13px;border:1px solid #f0d888">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;margin-top:2px"><path d="M7 1.5L1 12.5h12L7 1.5z" fill="#BA7517"/><path d="M7 5.5v3.5M7 10.5v.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
-        <p style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
+        <p data-lk-html="disc_warn" style="font-size:12px;color:#6b4400;line-height:1.6;margin:0">
           Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.
         </p>
       </div>
@@ -1163,12 +1210,28 @@ function mCalc(){
 
   mAnn={};rows.forEach(r=>{if(!mAnn[r.yr])mAnn[r.yr]={yr:r.yr,int:0,prin:0,bal:0,tp:0};mAnn[r.yr].int+=r.interest;mAnn[r.yr].prin+=r.principal;mAnn[r.yr].bal=r.bal;mAnn[r.yr].tp+=r.interest+r.principal;});
 
+  // Purchase cost per-field hints
   const taxHint=document.getElementById('m-tax-applied');
   const notHint=document.getElementById('m-notary-applied');
   const agtHint=document.getElementById('m-agent-applied');
-  if(taxHint)taxHint.textContent=tax.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(tA);
-  if(notHint)notHint.textContent=notary.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(nA);
-  if(agtHint)agtHint.textContent=agent.toFixed(2)+'% '+T('hint_of')+' '+fe(price)+' '+T('hint_eq')+' '+fe(aA);
+  const taxAmt=document.getElementById('m-tax-amount');
+  const notAmt=document.getElementById('m-notary-amount');
+  const agtAmt=document.getElementById('m-agent-amount');
+  if(taxHint)taxHint.textContent=tax.toFixed(2)+'% '+T('hint_of')+' '+fe(price);
+  if(taxAmt)taxAmt.textContent='= '+fe(tA);
+  if(notHint)notHint.textContent=notary.toFixed(2)+'% '+T('hint_of')+' '+fe(price);
+  if(notAmt)notAmt.textContent='= '+fe(nA);
+  if(agtHint)agtHint.textContent=agent.toFixed(2)+'% '+T('hint_of')+' '+fe(price);
+  if(agtAmt)agtAmt.textContent='= '+fe(aA);
+  // Total costs summary row
+  const tv=document.getElementById('m-total-tax-val');
+  const nv=document.getElementById('m-total-notary-val');
+  const av=document.getElementById('m-total-agent-val');
+  const cv=document.getElementById('m-total-costs-val');
+  if(tv)tv.textContent=fe(tA);
+  if(nv)nv.textContent=fe(nA);
+  if(av)av.textContent=fe(aA);
+  if(cv)cv.textContent=fe(costs);
 
   mRenderAmort(rows,fixed);
 }
@@ -1815,6 +1878,11 @@ const TR={
     cc_int:'Int:',cc_yr:'yr',cc_yrs:'yrs',
     // Amort personal
     tab_ann:'Annual',tab_mo:'Monthly',
+    disc_title:'Disclaimer',
+    disc_body:'This calculator is for <strong style="color:#222">informational purposes only</strong>. Results are estimates and not financial, legal, or investment advice. Loan terms, rates, and fees vary by lender.',
+    disc_warn:'Please <strong>consult a qualified advisor or your bank</strong> before making financial decisions. We are not responsible for any decisions made based on these results.',
+    btn_save:'Save to file',
+    btn_print:'Print',
   },
   de:{
     brand_pre:'Deutscher ',brand_span:'Kredit',brand_post:'rechner',
@@ -1866,6 +1934,11 @@ const TR={
     chart_principal:'Tilgung',chart_interest:'Zinsen',
     cc_int:'Zinsen:',cc_yr:'J.',cc_yrs:'J.',
     tab_ann:'Jährlich',tab_mo:'Monatlich',
+    disc_title:'Haftungsausschluss',
+    disc_body:'Dieser Rechner dient ausschließlich <strong style="color:#222">zu Informationszwecken</strong>. Die Ergebnisse sind Schätzungen und stellen keine finanzielle, rechtliche oder Anlageberatung dar. Kreditkonditionen, Zinsen und Gebühren variieren je nach Anbieter.',
+    disc_warn:'Bitte <strong>konsultieren Sie einen qualifizierten Berater oder Ihre Bank</strong>, bevor Sie finanzielle Entscheidungen treffen. Wir übernehmen keine Haftung für Entscheidungen, die auf Basis dieser Ergebnisse getroffen werden.',
+    btn_save:'Als Datei speichern',
+    btn_print:'Drucken',
   }
 };
 
@@ -1910,9 +1983,24 @@ function applyLang(){
 
   // PDF button — preserve class
   const pdfBtn=el('pdf-btn');if(pdfBtn)pdfBtn.textContent=T('btn_pdf');
+  // Save to file and Print button labels
+  document.querySelectorAll('[data-lk="btn_save"]').forEach(e=>e.textContent=T('btn_save'));
+  document.querySelectorAll('[data-lk="btn_print"]').forEach(e=>e.textContent=T('btn_print'));
+  // Disclaimer and other HTML-containing elements
+  document.querySelectorAll('[data-lk-html]').forEach(e=>{
+    e.innerHTML=T(e.getAttribute('data-lk-html'));
+  });
+  // Plain data-lk elements
+  document.querySelectorAll('[data-lk]').forEach(e=>{
+    const key=e.getAttribute('data-lk');
+    if(key==='brand'||key==='info_costs'){e.innerHTML=T(key);}
+    else{e.textContent=T(key);}
+  });
 
   // Section titles (data-lang attr lookup by content — use data attrs)
   all('[data-lk]').forEach(e=>{ e.textContent=T(e.getAttribute('data-lk')); });
+  // data-lk-html: use innerHTML for elements containing <strong> tags
+  all('[data-lk-html]').forEach(e=>{ e.innerHTML=T(e.getAttribute('data-lk-html')); });
 
   // Collapse buttons
   all('.collapse-btn').forEach(btn=>{
